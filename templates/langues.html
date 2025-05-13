@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Langues - LearnBall</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    .phrase-card.learned {
+      border-left: 4px solid #10b981;
+      background-color: #f0fdf4;
+    }
+    .dark .phrase-card.learned {
+      border-left-color: #047857;
+      background-color: rgba(5, 150, 105, 0.1);
+    }
+    .language-tab.active {
+      border-bottom: 3px solid #3b82f6;
+      color: #3b82f6;
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-200 font-sans">
+  <!-- Header -->
+  <header class="bg-blue-600 py-20 px-6 text-center">
+    <h1 class="text-4xl md:text-6xl font-bold mb-4 text-white">🗣️ Langues & Football</h1>
+    <p class="text-xl text-blue-100">Apprends les langues avec les interviews de stars</p>
+  </header>
+
+  <!-- Contenu Principal -->
+  <main class="max-w-4xl mx-auto px-4 py-12">
+    <!-- Section Langues -->
+    <section class="mb-12 bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+      <div class="p-6">
+        <h2 class="text-2xl font-bold mb-6 flex items-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
+          </svg>
+          Interviews de joueurs
+        </h2>
+        
+        <!-- Onglets Langues -->
+        <div class="flex border-b border-gray-200 dark:border-gray-700 mb-6">
+          <button data-lang="en" class="language-tab active px-4 py-2 font-medium flex items-center">
+            <span class="text-lg mr-2">🇬🇧</span> Anglais
+          </button>
+          <button data-lang="es" class="language-tab px-4 py-2 font-medium flex items-center">
+            <span class="text-lg mr-2">🇪🇸</span> Espagnol
+          </button>
+          <button data-lang="de" class="language-tab px-4 py-2 font-medium flex items-center">
+            <span class="text-lg mr-2">🇩🇪</span> Allemand
+          </button>
+        </div>
+        
+        <!-- Phrases -->
+        <div id="phrases-container" class="space-y-4">
+          <!-- Les phrases seront générées par JavaScript -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Vocabulaire Football -->
+    <section class="mb-12 bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+      <div class="p-6">
+        <h2 class="text-2xl font-bold mb-6 flex items-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+          </svg>
+          Vocabulaire du Football
+        </h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="vocabulary-container">
+          <!-- Le vocabulaire sera généré par JavaScript -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Défi Linguistique -->
+    <section class="bg-blue-50 dark:bg-blue-900/20 rounded-lg shadow-md overflow-hidden">
+      <div class="p-6">
+        <h2 class="text-2xl font-bold mb-6 flex items-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          Défi linguistique
+        </h2>
+        
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <thead class="bg-gray-50 dark:bg-gray-800">
+              <tr>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Français</th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Anglais 🇬🇧</th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Espagnol 🇪🇸</th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Allemand 🇩🇪</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700" id="challenge-table">
+              <!-- Les lignes seront générées par JavaScript -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-gray-100 dark:bg-gray-800 py-8 text-center">
+    <a href="index.html" class="inline-flex items-center px-6 py-2 bg-white dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+      </svg>
+      Retour à l'accueil
+    </a>
+  </footer>
+
+  <script>
+    // Données des langues
+    const languagesData = [
+      {
+        code: 'en',
+        name: 'Anglais',
+        flag: '🇬🇧',
+        phrases: [
+          {
+            id: 1,
+            original: "Football is more than just a game for me, it's a way of life.",
+            translation: "Le football est plus qu'un simple jeu pour moi, c'est un mode de vie.",
+            audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+            player: "Harry Kane"
+          },
+          {
+            id: 2,
+            original: "I always prepare mentally before big matches to stay focused.",
+            translation: "Je me prépare toujours mentalement avant les grands matchs pour rester concentré.",
+            audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
+            player: "Jordan Henderson"
+          },
+          {
+            id: 3,
+            original: "The atmosphere at Anfield is unlike anything else in world football.",
+            translation: "L'atmosphère à Anfield est incomparable dans le monde du football.",
+            audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
+            player: "Trent Alexander-Arnold"
+          }
+        ]
+      },
+      {
+        code: 'es',
+        name: 'Espagnol',
+        flag: '🇪🇸',
+        phrases: [
+          {
+            id: 1,
+            original: "El fútbol es un lenguaje universal que une a las personas.",
+            translation: "Le football est un langage universel qui unit les gens.",
+            audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3",
+            player: "Sergio Ramos"
+          },
+          {
+            id: 2,
+            original: "Cuando estoy en el campo, solo pienso en dar lo mejor de mí.",
+            translation: "Quand je suis sur le terrain, je pense seulement à donner le meilleur de moi-même.",
+            audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3",
+            player: "Andrés Iniesta"
+          },
+          {
+            id: 3,
+            original: "La técnica es importante, pero el corazón lo es más.",
+            translation: "La technique est importante, mais le cœur l'est encore plus.",
+            audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3",
+            player: "Xavi Hernández"
+          }
+        ]
+      },
+      {
+        code: 'de',
+        name: 'Allemand',
+        flag: '🇩🇪',
+        phrases: [
+          {
+            id: 1,
+            original: "Fußball ist für mich mehr als nur ein Spiel, es ist eine Leidenschaft.",
+            translation: "Pour moi, le football est plus qu'un jeu, c'est une passion.",
+            audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3",
+            player: "Manuel Neuer"
+          },
+          {
+            id: 2,
+            original: "Der Gegenpressing ist wie ein Konzert, alle müssen zusammenspielen.",
+            translation: "Le contre-pressing est comme un concert, tout le monde doit jouer ensemble.",
+            audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3",
+            player: "Jürgen Klopp"
+          },
+          {
+            id: 3,
+            original: "Disziplin und Teamgeist sind die Grundlagen des Erfolgs.",
+            translation: "La discipline et l'esprit d'équipe sont les fondements du succès.",
+            audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-9.mp3",
+            player: "Thomas Müller"
+          }
+        ]
+      }
+    ];
+
+    // Vocabulaire
+    const vocabularyData = [
+      {
+        language: 'Anglais 🇬🇧',
+        terms: [
+          { term: "Pitch", translation: "Le terrain" },
+          { term: "Goalkeeper", translation: "Le gardien" },
+          { term: "Offside", translation: "Hors-jeu" },
+          { term: "Corner kick", translation: "Corner" },
+          { term: "To score", translation: "Marquer" }
+        ]
+      },
+      {
+        language: 'Espagnol 🇪🇸',
+        terms: [
+          { term: "La cancha", translation: "Le terrain" },
+          { term: "El arquero", translation: "Le gardien" },
+          { term: "Fuera de juego", translation: "Hors-jeu" },
+          { term: "Tiro de esquina", translation: "Corner" },
+          { term: "Marcar un gol", translation: "Marquer" }
+        ]
+      },
+      {
+        language: 'Allemand 🇩🇪',
+        terms: [
+          { term: "Der Spielfeld", translation: "Le terrain" },
+          { term: "Der Torwart", translation: "Le gardien" },
+          { term: "Abseits", translation: "Hors-jeu" },
+          { term: "Eckstoß", translation: "Corner" },
+          { term: "Ein Tor schießen", translation: "Marquer" }
+        ]
+      }
+    ];
+
+    // Défi linguistique
+    const challengeData = [
+      { french: "Passe-moi le ballon !", english: "Pass me the ball!", spanish: "¡Pásame el balón!", german: "Gib mir den Ball!" },
+      { french: "Bon match !", english: "Good game!", spanish: "¡Buen partido!", german: "Gutes Spiel!" },
+      { french: "Je suis démarqué !", english: "I'm open!", spanish: "¡Estoy desmarcado!", german: "Ich bin frei!" },
+      { french: "Bien joué !", english: "Well played!", spanish: "¡Bien jugado!", german: "Gut gespielt!" }
+    ];
+
+    // État de l'application
+    let currentLanguage = 'en';
+    let learnedPhrases = JSON.parse(localStorage.getItem('learnedPhrases')) || [];
+
+    // Initialisation
+    document.addEventListener('DOMContentLoaded', () => {
+      renderPhrases();
+      renderVocabulary();
+      renderChallengeTable();
+      setupEventListeners();
+    });
+
+    // Fonctions de rendu
+    function renderPhrases() {
+      const language = languagesData.find(lang => lang.code === currentLanguage);
+      const container = document.getElementById('phrases-container');
+      
+      container.innerHTML = language.phrases.map(phrase => `
+        <div id="phrase-${phrase.id}" class="phrase-card p-4 border border-gray-200 dark:border-gray-700 rounded-lg mb-4 ${learnedPhrases.includes(phrase.id) ? 'learned' : ''}">
+          <div class="flex items-start">
+            <button onclick="playAudio('${phrase.audio}')" class="mr-4 flex-shrink-0 bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300 p-2 rounded-full">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15.536a5 5 0 001.414 1.414m2.828-9.9a9 9 0 012.728-2.728" />
+              </svg>
+            </button>
+            <div class="flex-grow">
+              <div class="flex items-center justify-between">
+                <p class="font-medium text-gray-700 dark:text-gray-300">${phrase.player}</p>
+                <button onclick="toggleLearned(${phrase.id})" class="text-gray-400 hover:text-green-500">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 ${learnedPhrases.includes(phrase.id) ? 'text-green-500' : ''}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </button>
+              </div>
+              <p class="text-lg font-medium my-2">${phrase.original}</p>
+              <p class="text-gray-600 dark:text-gray-400">${phrase.translation}</p>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderVocabulary() {
+      const container = document.getElementById('vocabulary-container');
+      container.innerHTML = vocabularyData.map(lang => `
+        <div class="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-lg">
+          <h3 class="font-bold text-lg mb-3 flex items-center">
+            <span class="text-xl mr-2">${lang.language.split(' ')[1]}</span>
+            ${lang.language.split(' ')[0]}
+          </h3>
+          <ul class="space-y-2">
+            ${lang.terms.map(term => `
+              <li class="flex justify-between py-1 border-b border-gray-200 dark:border-gray-600">
+                <span class="font-medium">${term.term}</span>
+                <span class="text-gray-600 dark:text-gray-400">${term.translation}</span>
+              </li>
+            `).join('')}
+          </ul>
+        </div>
+      `).join('');
+    }
+
+    function renderChallengeTable() {
+      const container = document.getElementById('challenge-table');
+      container.innerHTML = challengeData.map(row => `
+        <tr>
+          <td class="px-4 py-3 whitespace-nowrap">${row.french}</td>
+          <td class="px-4 py-3 whitespace-nowrap text-gray-600 dark:text-gray-400">${row.english}</td>
+          <td class="px-4 py-3 whitespace-nowrap text-gray-600 dark:text-gray-400">${row.spanish}</td>
+          <td class="px-4 py-3 whitespace-nowrap text-gray-600 dark:text-gray-400">${row.german}</td>
+        </tr>
+      `).join('');
+    }
+
+    function setupEventListeners() {
+      // Changement de langue
+      document.querySelectorAll('.language-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+          // Retirer la classe active de tous les onglets
+          document.querySelectorAll('.language-tab').forEach(t => t.classList.remove('active'));
+          // Ajouter la classe active à l'onglet cliqué
+          tab.classList.add('active');
+          
+          currentLanguage = tab.dataset.lang;
+          renderPhrases();
+        });
+      });
+    }
+
+    // Fonctions globales
+    window.playAudio = function(audioUrl) {
+      const audio = new Audio(audioUrl);
+      audio.play().catch(e => console.log("Lecture audio bloquée:", e));
+    };
+
+    window.toggleLearned = function(phraseId) {
+      if (learnedPhrases.includes(phraseId)) {
+        learnedPhrases = learnedPhrases.filter(id => id !== phraseId);
+      } else {
+        learnedPhrases.push(phraseId);
+      }
+      
+      localStorage.setItem('learnedPhrases', JSON.stringify(learnedPhrases));
+      renderPhrases();
+    };
+  </script>
+</body>
+</html>

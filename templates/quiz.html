@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz - LearnBall</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="min-h-screen bg-gradient-to-br from-purple-900 to-red-900 text-white font-sans">
+  <header class="bg-gradient-to-r from-purple-800/70 to-red-800/70 py-20 px-6 text-center">
+    <h1 class="text-4xl md:text-6xl font-bold mb-4">🧠 Quiz Foot Éducatif</h1>
+    <p class="text-xl opacity-90">Teste tes connaissances et deviens un champion !</p>
+  </header>
+
+  <main class="max-w-4xl mx-auto px-6 py-12">
+    <div id="quiz-container" class="bg-white/10 backdrop-blur-md rounded-2xl p-8 border border-white/20">
+      <div id="progress" class="mb-4 text-yellow-400 font-bold">Question 1/5</div>
+      <div id="question" class="text-2xl font-bold mb-6"></div>
+      <div id="options" class="grid gap-4 mb-8"></div>
+      <button id="next-btn" class="px-6 py-3 bg-gradient-to-r from-green-500 to-blue-500 rounded-lg font-bold hidden">
+        Suivant →
+      </button>
+      <div id="result" class="mt-6 hidden">
+        <div id="explanation" class="bg-black/20 p-4 rounded-lg mb-4"></div>
+        <div id="score" class="text-xl font-bold"></div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // Données du quiz enrichies
+    const quizData = [
+      {
+        question: "Si une équipe marque 2 buts en première mi-temps et 3 en seconde, quel est le score final ?",
+        options: ["2-3", "3-2", "5-0"],
+        answer: 2,
+        explanation: "2 + 3 = 5 buts au total",
+        category: "maths"
+      },
+      {
+        question: "Quel pays a inventé le football moderne ?",
+        options: ["Brésil", "France", "Angleterre"],
+        answer: 2,
+        explanation: "Les règles modernes ont été codifiées en Angleterre en 1863",
+        category: "histoire"
+      },
+      {
+        question: "Combien de joueurs composent une équipe de football ?",
+        options: ["9", "11", "13"],
+        answer: 1,
+        explanation: "11 joueurs dont 1 gardien",
+        category: "règles"
+      },
+      {
+        question: "Si une équipe a 60% de possession et 12 tirs cadrés, quelle est sa probabilité approximative de marquer?",
+        options: ["20%", "35%", "50%", "75%"],
+        answer: 1,
+        explanation: "En moyenne, 35% des tirs cadrés aboutissent à un but en ligue professionnelle",
+        category: "maths"
+      },
+      {
+        question: "Quel pays a remporté le plus de Coupes du Monde?",
+        options: ["Brésil", "Allemagne", "Italie", "Argentine"],
+        answer: 0,
+        explanation: "Le Brésil a remporté 5 Coupes du Monde (1958, 1962, 1970, 1994, 2002)",
+        category: "géographie"
+      }
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+
+    // Charger une question
+    function loadQuestion() {
+      if (currentQuestion >= quizData.length) {
+        showResults();
+        return;
+      }
+
+      const q = quizData[currentQuestion];
+      document.getElementById('question').innerHTML = q.question;
+      document.getElementById('progress').textContent = `Question ${currentQuestion + 1}/${quizData.length}`;
+      
+      let optionsHtml = '';
+      q.options.forEach((option, index) => {
+        optionsHtml += `
+          <button onclick="checkAnswer(${index})" 
+            class="p-4 bg-white/10 rounded-lg hover:bg-yellow-500/20 transition">
+            ${String.fromCharCode(65 + index)}. ${option}
+          </button>
+        `;
+      });
+      
+      document.getElementById('options').innerHTML = optionsHtml;
+      document.getElementById('next-btn').classList.add('hidden');
+      document.getElementById('result').classList.add('hidden');
+    }
+
+    // Vérifier la réponse
+    function checkAnswer(selectedIndex) {
+      const q = quizData[currentQuestion];
+      const options = document.querySelectorAll('#options button');
+      
+      // Désactive tous les boutons
+      options.forEach(btn => btn.disabled = true);
+      
+      // Met en évidence la réponse
+      options.forEach((btn, index) => {
+        if (index === q.answer) {
+          btn.classList.add('bg-green-500/30', 'border-green-500');
+        } else if (index === selectedIndex) {
+          btn.classList.add('bg-red-500/30', 'border-red-500');
+        }
+      });
+
+      // Affiche l'explication
+      document.getElementById('explanation').innerHTML = `💡 ${q.explanation}`;
+      document.getElementById('result').classList.remove('hidden');
+      
+      // Met à jour le score
+      if (selectedIndex === q.answer) {
+        score++;
+        document.getElementById('score').innerHTML = `✅ Score : ${score}/${quizData.length}`;
+      } else {
+        document.getElementById('score').innerHTML = `❌ Score : ${score}/${quizData.length}`;
+      }
+      
+      document.getElementById('next-btn').classList.remove('hidden');
+    }
+
+    // Afficher les résultats finaux
+    function showResults() {
+      const percentage = Math.round((score / quizData.length) * 100);
+      let message;
+      
+      if (percentage >= 80) {
+        message = "🏆 Formidable ! Vous êtes un expert du football !";
+      } else if (percentage >= 60) {
+        message = "👍 Bon score ! Vous connaissez bien le football.";
+      } else {
+        message = "💪 Continuez à apprendre ! Le football est vaste.";
+      }
+      
+      document.getElementById('quiz-container').innerHTML = `
+        <div class="text-center">
+          <h2 class="text-3xl font-bold mb-6">Quiz Terminé !</h2>
+          <p class="text-2xl mb-4">Ton score : ${score}/${quizData.length}</p>
+          <p class="text-xl mb-6">${percentage}% de bonnes réponses</p>
+          <p class="text-lg mb-8">${message}</p>
+          <button onclick="location.reload()" class="px-6 py-3 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-lg font-bold">
+            Rejouer
+          </button>
+        </div>
+      `;
+    }
+
+    // Initialisation
+    document.getElementById('next-btn').addEventListener('click', () => {
+      currentQuestion++;
+      loadQuestion();
+    });
+
+    // Lance le quiz au chargement
+    loadQuestion();
+  </script>
+</body>
+</html>

@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Maths Avancées - LearnBall</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    .player-card {
+      transition: all 0.3s ease;
+      transform-style: preserve-3d;
+    }
+    .player-card:hover {
+      transform: translateY(-5px) scale(1.02);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+    .math-formula {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 15px;
+      margin: 15px 0;
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-gray-900 to-blue-900 text-white font-sans">
+  <!-- Header -->
+  <header class="bg-gradient-to-r from-blue-800 to-indigo-900 py-24 px-6 text-center">
+    <div class="max-w-4xl mx-auto">
+      <h1 class="text-4xl md:text-6xl font-bold mb-4">⚽📈 Maths du Football</h1>
+      <p class="text-xl md:text-2xl opacity-90">Analyses avancées, probabilités et statistiques des plus grands joueurs</p>
+    </div>
+  </header>
+
+  <!-- Contenu Principal -->
+  <main class="max-w-7xl mx-auto px-4 py-12">
+    <!-- Section Calculateur Avancé -->
+    <section class="mb-20 bg-gray-800/80 backdrop-blur-lg rounded-xl shadow-2xl p-8 border border-gray-700">
+      <h2 class="text-3xl font-bold mb-6 flex items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mr-3 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+        </svg>
+        Calculateur de Performance Avancée
+      </h2>
+      
+      <div class="grid md:grid-cols-2 gap-8 mb-8">
+        <div>
+          <label class="block mb-2 text-gray-300">Buts marqués</label>
+          <input type="number" id="goals" class="w-full px-4 py-3 bg-gray-700/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Ex: 12">
+        </div>
+        <div>
+          <label class="block mb-2 text-gray-300">Tirs cadrés</label>
+          <input type="number" id="shots-on-target" class="w-full px-4 py-3 bg-gray-700/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Ex: 28">
+        </div>
+        <div>
+          <label class="block mb-2 text-gray-300">Tirs totaux</label>
+          <input type="number" id="total-shots" class="w-full px-4 py-3 bg-gray-700/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Ex: 45">
+        </div>
+        <div>
+          <label class="block mb-2 text-gray-300">Minutes jouées</label>
+          <input type="number" id="minutes" class="w-full px-4 py-3 bg-gray-700/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Ex: 1800">
+        </div>
+      </div>
+      
+      <div class="grid md:grid-cols-2 gap-8 mb-8">
+        <div>
+          <label class="block mb-2 text-gray-300">Passes décisives</label>
+          <input type="number" id="assists" class="w-full px-4 py-3 bg-gray-700/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Ex: 5">
+        </div>
+        <div>
+          <label class="block mb-2 text-gray-300">Occasions créées</label>
+          <input type="number" id="chances-created" class="w-full px-4 py-3 bg-gray-700/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Ex: 15">
+        </div>
+      </div>
+      
+      <button onclick="calculateAdvancedStats()" class="px-8 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg font-bold text-lg hover:from-blue-700 hover:to-indigo-700 transition-all transform hover:scale-105 shadow-lg">
+        Calculer les Statistiques Avancées
+      </button>
+      
+      <div id="advanced-results" class="mt-12 hidden">
+        <div class="grid md:grid-cols-3 gap-6 mb-12">
+          <div class="bg-gray-700/50 p-6 rounded-xl border border-gray-600">
+            <h3 class="text-xl font-bold mb-3 text-blue-400">xG (Expected Goals)</h3>
+            <p class="text-4xl font-mono" id="xg-value">0.00</p>
+            <p class="text-gray-400 mt-2">Probabilité de marquer</p>
+          </div>
+          <div class="bg-gray-700/50 p-6 rounded-xl border border-gray-600">
+            <h3 class="text-xl font-bold mb-3 text-blue-400">Efficacité de tir</h3>
+            <p class="text-4xl font-mono" id="shot-efficiency">0%</p>
+            <p class="text-gray-400 mt-2">Buts / Tirs cadrés</p>
+          </div>
+          <div class="bg-gray-700/50 p-6 rounded-xl border border-gray-600">
+            <h3 class="text-xl font-bold mb-3 text-blue-400">Conversion de chances</h3>
+            <p class="text-4xl font-mono" id="chance-conversion">0%</p>
+            <p class="text-gray-400 mt-2">Buts / Occasions</p>
+          </div>
+        </div>
+        
+        <div class="math-formula">
+          <h4 class="font-bold mb-2 text-lg">Formule xG (Expected Goals):</h4>
+          <p class="text-gray-300 mb-2">Probabilité qu'un tir se transforme en but basée sur:</p>
+          <div class="tex2jax_process">
+            \[ xG = \frac{1}{1 + e^{-(0.5 \times position + 0.3 \angle tir - 0.2 \times distance)}} \]
+          </div>
+          <p class="text-gray-400 text-sm mt-2">* Modèle simplifié pour cette démonstration</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section Comparaison Joueurs -->
+    <section class="mb-20 bg-gray-800/80 backdrop-blur-lg rounded-xl shadow-2xl p-8 border border-gray-700">
+      <h2 class="text-3xl font-bold mb-8 flex items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mr-3 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+        </svg>
+        Comparaison des Performances
+      </h2>
+      
+      <div class="grid md:grid-cols-3 gap-6 mb-8">
+        <div class="player-card bg-gray-700/50 p-6 rounded-xl border border-gray-600 cursor-pointer" onclick="comparePlayer('mbappe')">
+          <div class="flex items-center mb-4">
+            <img src="https://pbs.twimg.com/media/FqaDY97WIAAO5zG.jpg" class="w-16 h-16 rounded-full mr-4 border-2 border-blue-500">
+            <div>
+              <h3 class="text-xl font-bold">Kylian Mbappé</h3>
+              <p class="text-gray-400">PSG - Attaquant</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <p class="text-sm text-gray-400">Buts/90min</p>
+              <p class="font-bold">0.87</p>
+            </div>
+            <div>
+              <p class="text-sm text-gray-400">xG/90min</p>
+              <p class="font-bold">0.72</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="player-card bg-gray-700/50 p-6 rounded-xl border border-gray-600 cursor-pointer" onclick="comparePlayer('haaland')">
+          <div class="flex items-center mb-4">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS_5Ux2w9klNygM1VJp3dULJRQ_LT-8QWo27A&s" class="w-16 h-16 rounded-full mr-4 border-2 border-blue-500">
+            <div>
+              <h3 class="text-xl font-bold">Erling Haaland</h3>
+              <p class="text-gray-400">Man City - Attaquant</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <p class="text-sm text-gray-400">Buts/90min</p>
+              <p class="font-bold">1.12</p>
+            </div>
+            <div>
+              <p class="text-sm text-gray-400">xG/90min</p>
+              <p class="font-bold">0.95</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="player-card bg-gray-700/50 p-6 rounded-xl border border-gray-600 cursor-pointer" onclick="comparePlayer('messi')">
+          <div class="flex items-center mb-4">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQIPFr9hht-zRFRMZs3G_3-HGYFWyfJmbpktQ&s" class="w-16 h-16 rounded-full mr-4 border-2 border-blue-500">
+            <div>
+              <h3 class="text-xl font-bold">Lionel Messi</h3>
+              <p class="text-gray-400">Inter Miami - Ailier</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <p class="text-sm text-gray-400">Buts/90min</p>
+              <p class="font-bold">0.68</p>
+            </div>
+            <div>
+              <p class="text-sm text-gray-400">xG/90min</p>
+              <p class="font-bold">0.52</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="bg-gray-900/50 p-6 rounded-xl">
+        <canvas id="player-comparison-chart" class="w-full h-96"></canvas>
+      </div>
+    </section>
+
+    <!-- Section Analyse de Match -->
+    <section class="mb-20 bg-gray-800/80 backdrop-blur-lg rounded-xl shadow-2xl p-8 border border-gray-700">
+      <h2 class="text-3xl font-bold mb-8 flex items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mr-3 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+        </svg>
+        Modélisation de Match
+      </h2>
+      
+      <div class="grid md:grid-cols-2 gap-8 mb-8">
+        <div>
+          <label class="block mb-2 text-gray-300">xG Équipe à domicile</label>
+          <input type="number" step="0.1" id="home-xg" class="w-full px-4 py-3 bg-gray-700/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Ex: 1.8" value="1.8">
+        </div>
+        <div>
+          <label class="block mb-2 text-gray-300">xG Équipe à l'extérieur</label>
+          <input type="number" step="0.1" id="away-xg" class="w-full px-4 py-3 bg-gray-700/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Ex: 1.2" value="1.2">
+        </div>
+      </div>
+      
+      <button onclick="simulateMatch()" class="px-8 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg font-bold text-lg hover:from-blue-700 hover:to-indigo-700 transition-all transform hover:scale-105 shadow-lg mb-8">
+        Simuler le Match
+      </button>
+      
+      <div class="grid md:grid-cols-3 gap-6 mb-8 hidden" id="match-results">
+        <div class="bg-gray-700/50 p-6 rounded-xl border border-gray-600">
+          <h3 class="text-xl font-bold mb-3 text-blue-400">Probabilité Victoire</h3>
+          <p class="text-4xl font-mono" id="win-prob">0%</p>
+        </div>
+        <div class="bg-gray-700/50 p-6 rounded-xl border border-gray-600">
+          <h3 class="text-xl font-bold mb-3 text-blue-400">Probabilité Nul</h3>
+          <p class="text-4xl font-mono" id="draw-prob">0%</p>
+        </div>
+        <div class="bg-gray-700/50 p-6 rounded-xl border border-gray-600">
+          <h3 class="text-xl font-bold mb-3 text-blue-400">Probabilité Défaite</h3>
+          <p class="text-4xl font-mono" id="loss-prob">0%</p>
+        </div>
+      </div>
+      
+      <div class="bg-gray-900/50 p-6 rounded-xl hidden" id="score-distribution">
+        <canvas id="score-probability-chart" class="w-full h-96"></canvas>
+      </div>
+      
+      <div class="math-formula mt-6">
+        <h4 class="font-bold mb-2 text-lg">Modèle de Poisson pour les prédictions:</h4>
+        <div class="tex2jax_process">
+          \[ P(k \text{ buts}) = \frac{e^{-\lambda} \lambda^k}{k!} \]
+        </div>
+        <p class="text-gray-400 text-sm mt-2">Où λ est l'xG de l'équipe et k le nombre de buts</p>
+      </div>
+    </section>
+
+    <!-- Section Analyse Temporelle -->
+    <section class="bg-gray-800/80 backdrop-blur-lg rounded-xl shadow-2xl p-8 border border-gray-700">
+      <h2 class="text-3xl font-bold mb-8 flex items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mr-3 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        Analyse Temporelle
+      </h2>
+      
+      <div class="mb-6">
+        <label class="block mb-2 text-gray-300">Sélectionner un joueur</label>
+        <select id="player-select" class="w-full px-4 py-3 bg-gray-700/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <option value="mbappe">Kylian Mbappé</option>
+          <option value="haaland">Erling Haaland</option>
+          <option value="messi">Lionel Messi</option>
+          <option value="ronaldo">Cristiano Ronaldo</option>
+        </select>
+      </div>
+      
+      <div class="bg-gray-900/50 p-6 rounded-xl">
+        <canvas id="time-analysis-chart" class="w-full h-96"></canvas>
+      </div>
+      
+      <div class="mt-6 grid md:grid-cols-2 gap-6">
+        <div class="math-formula">
+          <h4 class="font-bold mb-2">Régression Linéaire:</h4>
+          <div class="tex2jax_process">
+            \[ y = \alpha + \beta x + \epsilon \]
+          </div>
+          <p class="text-gray-400 text-sm mt-2">Modélisation de la progression</p>
+        </div>
+        <div class="math-formula">
+          <h4 class="font-bold mb-2">Corrélation:</h4>
+          <div class="tex2jax_process">
+            \[ r = \frac{\sum (x_i - \bar{x})(y_i - \bar{y})}{\sqrt{\sum (x_i - \bar{x})^2 \sum (y_i - \bar{y})^2}} \]
+          </div>
+          <p class="text-gray-400 text-sm mt-2">Relation entre les variables</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-gray-800 py-12 text-center mt-20">
+    <div class="max-w-4xl mx-auto">
+      <a href="index.html" class="inline-flex items-center px-6 py-3 bg-gray-700 rounded-lg hover:bg-gray-600 transition">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        Retour à l'accueil
+      </a>
+      <p class="mt-6 text-gray-400">© 2023 LearnBall - Maths Avancées du Football</p>
+    </div>
+  </footer>
+
+  <script>
+    // Données des joueurs
+    const playersData = {
+      mbappe: {
+        name: "Kylian Mbappé",
+        stats: {
+          goals: 32,
+          shots: 108,
+          shotsOnTarget: 56,
+          assists: 8,
+          xg: 25.7,
+          xgPer90: 0.72,
+          goalsPer90: 0.87,
+          conversionRate: 0.29
+        },
+        timeSeries: generateTimeSeries(0.72, 0.02)
+      },
+      haaland: {
+        name: "Erling Haaland",
+        stats: {
+          goals: 36,
+          shots: 98,
+          shotsOnTarget: 62,
+          assists: 5,
+          xg: 32.4,
+          xgPer90: 0.95,
+          goalsPer90: 1.12,
+          conversionRate: 0.36
+        },
+        timeSeries: generateTimeSeries(0.95, 0.03)
+      },
+      messi: {
+        name: "Lionel Messi",
+        stats: {
+          goals: 16,
+          shots: 92,
+          shotsOnTarget: 42,
+          assists: 16,
+          xg: 14.8,
+          xgPer90: 0.52,
+          goalsPer90: 0.68,
+          conversionRate: 0.17
+        },
+        timeSeries: generateTimeSeries(0.52, -0.01)
+      },
+      ronaldo: {
+        name: "Cristiano Ronaldo",
+        stats: {
+          goals: 22,
+          shots: 124,
+          shotsOnTarget: 58,
+          assists: 4,
+          xg: 20.3,
+          xgPer90: 0.68,
+          goalsPer90: 0.74,
+          conversionRate: 0.18
+        },
+        timeSeries: generateTimeSeries(0.68, -0.005)
+      }
+    };
+
+    // Génère des données temporelles fictives
+    function generateTimeSeries(base, trend) {
+      const series = [];
+      let current = base;
+      for (let i = 0; i < 12; i++) {
+        series.push({
+          month: `${i+1}/2023`,
+          xg: current + (Math.random() * 0.2 - 0.1),
+          goals: (current + (Math.random() * 0.2 - 0.1)) * 1.2,
+          shots: 5 + Math.random() * 2
+        });
+        current += trend;
+      }
+      return series;
+    }
+
+    // Graphiques
+    let comparisonChart = null;
+    let scoreChart = null;
+    let timeChart = null;
+
+    // Initialisation des graphiques
+    function initCharts() {
+      const comparisonCtx = document.getElementById('player-comparison-chart').getContext('2d');
+      comparisonChart = new Chart(comparisonCtx, {
+        type: 'bar',
+        data: {
+          labels: ['xG/90', 'Buts/90', 'Conversion'],
+          datasets: []
+        },
+        options: {
+          responsive: true,
+          scales: {
+            y: { beginAtZero: true },
+            x: { grid: { color: 'rgba(255, 255, 255, 0.1)' } }
+          },
+          plugins: {
+            legend: { position: 'top', labels: { color: 'white' } },
+            tooltip: { mode: 'index', intersect: false }
+          }
+        }
+      });
+
+      const scoreCtx = document.getElementById('score-probability-chart').getContext('2d');
+      scoreChart = new Chart(scoreCtx, {
+        type: 'bar',
+        data: { labels: [], datasets: [] },
+        options: {
+          responsive: true,
+          scales: {
+            y: { beginAtZero: true, max: 100 },
+            x: { grid: { color: 'rgba(255, 255, 255, 0.1)' } }
+          },
+          plugins: {
+            legend: { display: false },
+            tooltip: { callbacks: { label: ctx => `${ctx.raw}%` } }
+          }
+        }
+      });
+
+      const timeCtx = document.getElementById('time-analysis-chart').getContext('2d');
+      timeChart = new Chart(timeCtx, {
+        type: 'line',
+        data: { labels: [], datasets: [] },
+        options: {
+          responsive: true,
+          interaction: { mode: 'index', intersect: false },
+          scales: {
+            y: { beginAtZero: true },
+            x: { grid: { color: 'rgba(255, 255, 255, 0.1)' } }
+          },
+          plugins: {
+            legend: { position: 'top', labels: { color: 'white' } },
+            tooltip: { mode: 'index', intersect: false }
+          }
+        }
+      });
+
+      updateTimeChart('mbappe');
+    }
+
+    // Calcul des statistiques avancées
+    function calculateAdvancedStats() {
+      const goals = parseInt(document.getElementById('goals').value) || 0;
+      const shotsOnTarget = parseInt(document.getElementById('shots-on-target').value) || 1;
+      const totalShots = parseInt(document.getElementById('total-shots').value) || 1;
+      const minutes = parseInt(document.getElementById('minutes').value) || 90;
+      const assists = parseInt(document.getElementById('assists').value) || 0;
+      const chancesCreated = parseInt(document.getElementById('chances-created').value) || 1;
+
+      // Calculs avancés
+      const xg = (totalShots * 0.1 + shotsOnTarget * 0.15).toFixed(2);
+      const shotEfficiency = ((goals / shotsOnTarget) * 100).toFixed(1);
+      const chanceConversion = ((goals / chancesCreated) * 100).toFixed(1);
+      const goalsPer90 = ((goals / minutes) * 90).toFixed(2);
+      const xgPer90 = ((xg / minutes) * 90).toFixed(2);
+
+      // Affichage des résultats
+      document.getElementById('xg-value').textContent = xg;
+      document.getElementById('shot-efficiency').textContent = shotEfficiency;
+      document.getElementById('chance-conversion').textContent = chanceConversion;
+      
+      document.getElementById('advanced-results').classList.remove('hidden');
+    }
+
+    // Comparaison de joueurs
+    function comparePlayer(playerId) {
+      const player = playersData[playerId];
+      
+      comparisonChart.data.datasets = [{
+        label: player.name,
+        data: [player.stats.xgPer90, player.stats.goalsPer90, player.stats.conversionRate * 100],
+        backgroundColor: [
+          'rgba(59, 130, 246, 0.7)',
+          'rgba(16, 185, 129, 0.7)',
+          'rgba(245, 158, 11, 0.7)'
+        ],
+        borderColor: [
+          'rgba(59, 130, 246, 1)',
+          'rgba(16, 185, 129, 1)',
+          'rgba(245, 158, 11, 1)'
+        ],
+        borderWidth: 1
+      }];
+      
+      comparisonChart.update();
+    }
+
+    // Simulation de match
+    function simulateMatch() {
+      const homeXg = parseFloat(document.getElementById('home-xg').value) || 1.5;
+      const awayXg = parseFloat(document.getElementById('away-xg').value) || 1.0;
+      
+      // Calcul des probabilités (modèle Poisson simplifié)
+      const homeWinProb = (homeXg > awayXg) ? 45 + (homeXg - awayXg) * 15 : 35 + (homeXg - awayXg) * 10;
+      const drawProb = 25 - Math.abs(homeXg - awayXg) * 5;
+      const awayWinProb = 100 - homeWinProb - drawProb;
+      
+      // Affichage des résultats
+      document.getElementById('win-prob').textContent = homeWinProb.toFixed(1) + '%';
+      document.getElementById('draw-prob').textContent = drawProb.toFixed(1) + '%';
+      document.getElementById('loss-prob').textContent = awayWinProb.toFixed(1) + '%';
+      
+      document.getElementById('match-results').classList.remove('hidden');
+      
+      // Mise à jour du graphique des scores
+      updateScoreChart(homeXg, awayXg);
+      document.getElementById('score-distribution').classList.remove('hidden');
+    }
+
+    // Mise à jour du graphique des scores
+    function updateScoreChart(homeXg, awayXg) {
+      const scores = ['0-0', '1-0', '0-1', '1-1', '2-0', '0-2', '2-1', '1-2', '2-2', '3+'];
+      const probs = [
+        22, 18, 12, 15, 8, 5, 7, 5, 4, 4
+      ].map(p => p * (0.8 + Math.random() * 0.4));
+      
+      const total = probs.reduce((a, b) => a + b, 0);
+      const normalizedProbs = probs.map(p => (p / total * 100).toFixed(1));
+      
+      scoreChart.data.labels = scores;
+      scoreChart.data.datasets = [{
+        data: normalizedProbs,
+        backgroundColor: 'rgba(59, 130, 246, 0.7)',
+        borderColor: 'rgba(59, 130, 246, 1)',
+        borderWidth: 1
+      }];
+      
+      scoreChart.update();
+    }
+
+    // Mise à jour du graphique temporel
+    function updateTimeChart(playerId) {
+      const player = playersData[playerId];
+      const series = player.timeSeries;
+      
+      timeChart.data.labels = series.map(s => s.month);
+      timeChart.data.datasets = [
+        {
+          label: 'xG par match',
+          data: series.map(s => s.xg),
+          borderColor: 'rgba(59, 130, 246, 1)',
+          backgroundColor: 'rgba(59, 130, 246, 0.1)',
+          tension: 0.3,
+          yAxisID: 'y'
+        },
+        {
+          label: 'Buts par match',
+          data: series.map(s => s.goals),
+          borderColor: 'rgba(16, 185, 129, 1)',
+          backgroundColor: 'rgba(16, 185, 129, 0.1)',
+          tension: 0.3,
+          yAxisID: 'y'
+        },
+        {
+          label: 'Tirs par match',
+          data: series.map(s => s.shots),
+          borderColor: 'rgba(245, 158, 11, 1)',
+          backgroundColor: 'rgba(245, 158, 11, 0.1)',
+          tension: 0.3,
+          yAxisID: 'y1'
+        }
+      ];
+      
+      timeChart.options.scales.y1 = {
+        type: 'linear',
+        display: true,
+        position: 'right',
+        grid: { drawOnChartArea: false }
+      };
+      
+      timeChart.update();
+    }
+
+    // Écouteurs d'événements
+    document.getElementById('player-select').addEventListener('change', (e) => {
+      updateTimeChart(e.target.value);
+    });
+
+    // Initialisation
+    document.addEventListener('DOMContentLoaded', () => {
+      initCharts();
+      comparePlayer('mbappe');
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Géographie - LearnBall</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    #map { height: 500px; }
+    .club-card:hover .club-logo { transform: scale(1.1); }
+    .country-flag { width: 24px; height: 16px; object-fit: cover; }
+    .stadium-image { height: 120px; object-fit: cover; width: 100%; border-radius: 8px; }
+  </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-indigo-900 to-teal-900 text-white font-sans">
+  <!-- Header -->
+  <header class="bg-gradient-to-r from-indigo-800/70 to-teal-800/70 py-20 px-6 text-center">
+    <h1 class="text-4xl md:text-6xl font-bold mb-4">🌍 Football International</h1>
+    <p class="text-xl opacity-90">Explore les clubs, joueurs et cultures du monde entier</p>
+  </header>
+
+  <!-- Contenu Principal -->
+  <main class="max-w-7xl mx-auto px-6 py-12">
+    <!-- Carte Interactive -->
+    <section class="mb-20 bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20">
+      <h2 class="text-3xl font-bold mb-6 flex items-center justify-center">
+        <span class="mr-3">🗺️</span> Carte des Clubs Légendaires
+      </h2>
+      <div id="map" class="rounded-xl overflow-hidden"></div>
+      <input type="text" oninput="filterClubs(this.value)" placeholder="🔍 Rechercher un club..." class="w-full mt-6 p-3 rounded-lg bg-white/10 text-white placeholder-white/60 border border-white/20">
+
+      <div class="mt-4 flex flex-wrap gap-2 justify-center" id="country-filters"></div>
+    </section>
+
+    <!-- Classement par Continent -->
+    <section class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-20">
+      <!-- Europe -->
+      <div class="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20">
+        <h3 class="text-2xl font-bold mb-4 flex items-center">
+          <span class="mr-2">🇪🇺</span> Europe - Top Clubs
+        </h3>
+        <ol class="space-y-3 max-h-64 overflow-hidden transition-all duration-500" id="europe-clubs"></ol>
+        <button onclick="toggleList('europe-clubs', this)" class="mt-4 text-yellow-400 hover:underline">Voir plus →</button>
+      </div>
+
+      <!-- Amérique du Sud -->
+      <div class="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20">
+        <h3 class="text-2xl font-bold mb-4 flex items-center">
+          <span class="mr-2">🇧🇷</span> Amérique du Sud - Top Clubs
+        </h3>
+        <ol class="space-y-3 max-h-64 overflow-hidden transition-all duration-500" id="south-america-clubs"></ol>
+        <button onclick="toggleList('south-america-clubs', this)" class="mt-4 text-yellow-400 hover:underline">Voir plus →</button>
+      </div>
+
+      <!-- Afrique -->
+      <div class="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20">
+        <h3 class="text-2xl font-bold mb-4 flex items-center">
+          <span class="mr-2">🇳🇬</span> Afrique - Top Clubs
+        </h3>
+        <ol class="space-y-3 max-h-64 overflow-hidden transition-all duration-500" id="africa-clubs"></ol>
+        <button onclick="toggleList('africa-clubs', this)" class="mt-4 text-yellow-400 hover:underline">Voir plus →</button>
+      </div>
+    </section>
+
+    <!-- Culture Footballistique -->
+    <section class="bg-gradient-to-r from-blue-900/50 to-green-900/50 rounded-2xl p-8 mb-20">
+      <h2 class="text-3xl font-bold mb-8 text-center">⚽ Culture Footballistique</h2>
+      <div class="grid md:grid-cols-3 gap-8">
+        <div class="text-center bg-white/10 p-6 rounded-xl">
+          <div class="text-5xl mb-4">🏟️</div>
+          <h3 class="text-xl font-bold mb-2">Stades Légendaires</h3>
+          <div class="space-y-4">
+            <div>
+              <img src="https://upload.wikimedia.org/wikipedia/commons/9/96/El_Camp_Nou_en_un_partido_de_la_Uefa_Champions_League.jpg" class="stadium-image">
+              <p class="mt-2 font-medium">Camp Nou - Barcelone</p>
+            </div>
+            <div>
+              <img src="https://www.info-stades.fr/forum/ressources/image/13504" class="stadium-image">
+              <p class="mt-2 font-medium">Wembley - Londres</p>
+            </div>
+            <div>
+              <img src="https://e00-marca.uecdn.es/assets/multimedia/imagenes/2018/09/27/15380577690087.jpg" class="stadium-image">
+              <p class="mt-2 font-medium">Signal Iduna Park - Dortmund</p>
+            </div>
+          </div>
+        </div>
+        <div class="text-center bg-white/10 p-6 rounded-xl">
+          <div class="text-5xl mb-4">🎶</div>
+          <h3 class="text-xl font-bold mb-2">Hymnes & Chants</h3>
+          <div class="space-y-4 text-left">
+            <div class="p-3 bg-black/20 rounded-lg">
+              <p class="font-bold">"You'll Never Walk Alone"</p>
+              <p class="text-sm">Liverpool FC</p>
+              <audio controls class="w-full mt-2">
+                <source src="You'll never Walk Alone  Liverpool With Lyrics.mp3" type="audio/mpeg">
+              </audio>
+            </div>
+            <div class="p-3 bg-black/20 rounded-lg">
+              <p class="font-bold">"Hala Madrid"</p>
+              <p class="text-sm">Real Madrid</p>
+              <audio controls class="w-full mt-2">
+                <source src="Hala Madrid...y nada más (feat. RedOne).mp3" type="audio/mpeg">
+              </audio>
+            </div>
+            <div class="p-3 bg-black/20 rounded-lg">
+              <p class="font-bold">"Cant del Barça"</p>
+              <p class="text-sm">Fc Barcelona</p>
+              <audio controls class="w-full mt-2">
+                <source src="NEW VERSION of FC BARCELONA's official ICONIC ANTHEM!!!  Cant del Barça.mp3" type="audio/mpeg">
+              </audio>
+            </div>
+          </div>
+        </div>
+        <div class="text-center bg-white/10 p-6 rounded-xl">
+          <div class="text-5xl mb-4">🍜</div>
+          <h3 class="text-xl font-bold mb-2">Gastronomie</h3>
+          <div class="space-y-4">
+            <div class="p-3 bg-black/20 rounded-lg">
+              <p class="font-bold">Espagne - Paella</p>
+              <p class="text-sm">Spécialité de Valence</p>
+            </div>
+            <div class="p-3 bg-black/20 rounded-lg">
+              <p class="font-bold">Brésil - Feijoada</p>
+              <p class="text-sm">Plat national</p>
+            </div>
+            <div class="p-3 bg-black/20 rounded-lg">
+              <p class="font-bold">Angleterre - Fish & Chips</p>
+              <p class="text-sm">Tradition des matchs</p>
+            </div>
+            <div class="p-3 bg-black/20 rounded-lg">
+              <p class="font-bold">Maroc - Tajine & Couscous</p>
+              <p class="text-sm">Diversité des saveurs</p>
+            </div>
+            <div class="p-3 bg-black/20 rounded-lg">
+              <p class="font-bold">Argentine - Milanaise</p>
+              <p class="text-sm">Plat argentin</p>
+            </div>
+            <div class="p-3 bg-black/20 rounded-lg">
+              <p class="font-bold">Italie - Pasta & Pizza</p>
+              <p class="text-sm">Il cibo buono è fonte di felicità.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-black/30 py-8 text-center">
+    <a href="index.html" class="inline-block px-6 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition">
+      ← Retour à l'accueil
+    </a>
+  </footer>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    // Données enrichies des clubs
+    const clubsData = [
+      // Europe
+      { 
+        name: "FC Barcelone", 
+        country: "Espagne", 
+        city: "Barcelone", 
+        coords: [41.3809, 2.1228],
+        players: ["Messi", "Xavi", "Iniesta"],
+        stadium: "Camp Nou",
+        trophies: 101,
+        continent: "Europe"
+      },
+      { 
+        name: "Real Madrid", 
+        country: "Espagne", 
+        city: "Madrid", 
+        coords: [40.4531, -3.6883], 
+        players: ["Benzema", "Modric", "Cristiano"],
+        stadium: "Santiago Bernabéu",
+        trophies: 101,
+        continent: "Europe"
+      },
+      {
+      name: "FC Séville",
+      country: "Espagne",
+      city: "Séville",
+      coords: [37.3841, -5.9734],
+      players: ["Jesús Navas", "Ivan Rakitić", "Sergio Ramos"],
+      stadium: "Ramón Sánchez Pizjuán",
+      trophies: 18,
+      continent: "Europe"
+      },
+      { 
+        name: "Liverpool FC", 
+        country: "Angleterre", 
+        city: "Liverpool", 
+        coords: [53.4308, -2.9608],
+        players: ["Salah", "Van Dijk", "Gerrard"],
+        stadium: "Anfield",
+        trophies: 69,
+        continent: "Europe"
+      },
+      { 
+        name: "Manchester United", 
+        country: "Angleterre", 
+        city: "Manchester", 
+        coords: [53.4631, -2.2913],
+        players: ["Ronaldo", "Beckham", "Cantona"],
+        stadium: "Old Trafford",
+        trophies: 68,
+        continent: "Europe"
+      },
+      {
+      name: "Arsenal FC",
+      country: "Angleterre",
+      city: "Londres",
+      coords: [51.5549, -0.1084],
+      players: ["Thierry Henry", "Tony Adams", "Dennis Bergkamp"],
+      stadium: "Emirates Stadium",
+      trophies: 47,
+      continent: "Europe"
+      },
+      { 
+        name: "Paris Saint-Germain", 
+        country: "France", 
+        city: "Paris", 
+        coords: [48.8414, 2.2530],
+        players: ["Mbappé", "Neymar", "Ibrahimovic"],
+        stadium: "Parc des Princes",
+        trophies: 48,
+        continent: "Europe"
+      },
+      { 
+        name: "Bayern Munich", 
+        country: "Allemagne", 
+        city: "Munich", 
+        coords: [48.2188, 11.6242],
+        players: ["Müller", "Neuer", "Lewandowski"],
+        stadium: "Allianz Arena",
+        trophies: 70,
+        continent: "Europe"
+      },
+      { 
+        name: "FC Porto", 
+        country: "Portugal", 
+        city: "Porto", 
+        coords: [41.1619, -8.5839],
+        players: ["Deco", "Hulk", "Pepe"],
+        stadium: "Estádio do Dragão",
+        trophies: 45,
+        continent: "Europe"
+      },
+      // Afrique
+      { 
+        name: "Wydad AC", 
+        country: "Maroc", 
+        city: "Casablanca", 
+        coords: [33.5789, -7.6876],
+        players: ["El Karkouri", "Jabrane", "Nahiri"],
+        stadium: "Stade Mohammed V",
+        trophies: 29,
+        continent: "Africa"
+      },
+      { 
+        name: "Raja CA", 
+        country: "Maroc", 
+        city: "Casablanca", 
+        coords: [33.5709, -7.6689],
+        players: ["Zniti", "Moustaoudaa", "Moutouali"],
+        stadium: "Stade Mohammed V",
+        trophies: 30,
+        continent: "Africa"
+      },
+      { 
+        name: "Al Ahly", 
+        country: "Égypte", 
+        city: "Le Caire", 
+        coords: [30.0626, 31.3187],
+        players: ["Aboutrika", "El Khatib", "Sherif"],
+        stadium: "Stade International du Caire",
+        trophies: 118,
+        continent: "Africa"
+      },
+      // Amérique du Sud
+      { 
+        name: "Flamengo", 
+        country: "Brésil", 
+        city: "Rio de Janeiro", 
+        coords: [-22.9122, -43.2302],
+        players: ["Zico", "Gabigol", "Arrascaeta"],
+        stadium: "Maracanã",
+        trophies: 69,
+        continent: "South America"
+      },
+      { 
+        name: "Boca Juniors", 
+        country: "Argentine", 
+        city: "Buenos Aires", 
+        coords: [-34.6356, -58.3647],
+        players: ["Maradona", "Riquelme", "Tevez"],
+        stadium: "La Bombonera",
+        trophies: 74,
+        continent: "South America"
+      },
+      {
+  name: "AS Roma",
+  country: "Italie",
+  city: "Rome",
+  coords: [41.9341, 12.4547],
+  players: ["Francesco Totti", "Daniele De Rossi", "Roberto Baggio"],
+  stadium: "Stadio Olimpico",
+  trophies: 30,
+  continent: "Europe"
+},
+{
+  name: "Inter Milan",
+  country: "Italie",
+  city: "Milan",
+  coords: [45.4781, 9.1236],
+  players: ["Javier Zanetti", "Ronaldo", "Giuseppe Meazza"],
+  stadium: "San Siro",
+  trophies: 30,
+  continent: "Europe"
+},
+{
+  name: "AC Milan",
+  country: "Italie", 
+  city: "Milan",
+  coords: [45.4781, 9.1236],
+  players: ["Paolo Maldini", "Franco Baresi", "Kaká"],
+  stadium: "San Siro",
+  trophies: 64,
+  continent: "Europe"
+},
+{
+  name: "Juventus",
+  country: "Italie",
+  city: "Turin",
+  coords: [45.1096, 7.6417],
+  players: ["Alessandro Del Piero", "Gianluigi Buffon", "Michel Platini"],
+  stadium: "Allianz Stadium",
+  trophies: 70,
+  continent: "Europe"
+},
+{
+  name: "Ajax Amsterdam",
+  country: "Pays-Bas",
+  city: "Amsterdam",
+  coords: [52.3143, 4.9416],
+  players: ["Johan Cruyff", "Dennis Bergkamp", "Marco van Basten"],
+  stadium: "Johan Cruyff Arena",
+  trophies: 65,
+  continent: "Europe"
+}
+    ];
+
+    // Initialisation de la carte
+    const map = L.map('map').setView([20, 0], 2);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap'
+    }).addTo(map);
+
+    // Ajout des marqueurs avec icônes personnalisées
+    clubsData.forEach(club => {
+      const clubIcon = L.icon({
+        iconUrl: `https://flagcdn.com/20x15/${getCountryCode(club.country)}.png`,
+        iconSize: [20, 15],
+        className: 'club-icon'
+      });
+
+      const marker = L.marker(club.coords, { icon: clubIcon }).addTo(map)
+        .bindPopup(`
+          <div class="club-popup">
+            <h3 class="font-bold text-lg">${club.name}</h3>
+            <p class="text-sm">${club.stadium}, ${club.city}</p>
+            <img src="${getStadiumImage(club.name)}" class="w-full h-32 object-cover my-2 rounded"> 
+            <p>🏆 <strong>${club.trophies}</strong> trophées majeurs</p>
+            <p>⭐ Joueurs légendaires: ${club.players.join(", ")}</p>
+          </div>
+        `);
+        marker.on('click', function () {
+  document.querySelectorAll('.leaflet-marker-icon').forEach(m => m.classList.remove('ring-4', 'ring-yellow-400'));
+  marker._icon.classList.add('ring-4', 'ring-yellow-400');
+});
+
+        marker._icon.alt = club.name;
+
+    });
+
+    function getCountryCode(country) {
+      const codes = {
+        'Espagne': 'es',
+        'Angleterre': 'gb',
+        'France': 'fr',
+        'Allemagne': 'de',
+        'Portugal': 'pt',
+        'Italie': 'it',
+        'Pays-Bas': 'nl',
+        'Maroc': 'ma',
+        'Égypte': 'eg',
+        'Brésil': 'br',
+        'Argentine': 'ar'
+      };
+      return codes[country] || 'un';
+    }
+
+    function getStadiumImage(clubName) {
+  const images = {
+    "FC Barcelone": "https://thumbs.dreamstime.com/b/fc-barcelona-football-match-against-athletico-madrid-camp-nou-28323733.jpg",
+    "Real Madrid": "https://i.pinimg.com/736x/5a/f7/01/5af7016a0628ba85f3c416e784e38496.jpg",
+    "FC Séville" : "https://www.ostadium.com/galleries/estadio-ramon-sanchez-pizjuan-illus.jpg",
+    "Liverpool FC": "https://st4.depositphotos.com/1980693/20667/i/450/depositphotos_206677954-stock-photo-liverpool-united-kingdom-may-2018.jpg",
+    "Manchester United" : "https://media.istockphoto.com/id/1456209061/photo/manchester-united-old-trafford-stadium.jpg?s=612x612&w=0&k=20&c=GLldkzSy2F1B5I1tNg062kXuTN-16uQ1q39r0w_1q1s=",
+    "Arsenal FC" : "https://m.media-amazon.com/images/I/61M6B34Y7bL.jpg",
+    "AC Milan": "https://gentlemanultra.files.wordpress.com/2020/10/milan-scudetto-celebrations-2004.jpg?w=870&resize=821%2C513",
+    "Inter Milan": "https://gentlemanultra.files.wordpress.com/2020/10/milan-scudetto-celebrations-2004.jpg?w=870&resize=821%2C513",
+    "Juventus": "https://w0.peakpx.com/wallpaper/238/830/HD-wallpaper-juventus-stadium-modular-show-match-football-stadium-allianz-stadium-soccer-juventus-arena-italy-juventus-new-stadium.jpg",
+    "Bayern Munich": "https://t4.ftcdn.net/jpg/02/95/43/45/360_F_295434540_iE7uRsAbRPfOiXgW3m0eJhVbOhfNaC08.jpg",
+    "Raja CA" : "https://static.yabiladi.com/files/articles/2f7367639c04a7c223ff940fd8b9573b20191125175532.jpg",
+    "Wydad AC" : "https://i.pinimg.com/736x/d4/44/46/d4444606898ca601790f50a9cbe42a26.jpg",
+    "Al Ahly" : "https://upload.wikimedia.org/wikipedia/commons/e/e0/Al_ahly_fans_in_uae_2.JPG",
+    "Boca Juniors" : "https://www.ostadium.com/galleries/bombonera-projet-2017-big.jpg",
+    "Flamengo" : "https://lucarne-opposee.fr/images/stories/news/06-12-18/flamengo.jpg",
+    "Ajax Amsterdam" : "https://media.istockphoto.com/id/1088986974/fr/photo/johan-cruyff-arena.jpg?s=612x612&w=0&k=20&c=yLnAPRA0XYuZDOn1GoR_55J20t2MM-j4UaQ_lcHOEm4=",
+    "Paris Saint-Germain" : "https://cdn.generationvoyage.fr/2025/03/Le-Stade-PSG-Parc-des-Princes-a-Paris.jpeg",
+    "FC Porto" : "https://cdn.generationvoyage.fr/2025/02/stade-du-Dragao-a-Porto.jpeg",
+    "AS Roma" : "https://i.ytimg.com/vi/RE0m08zRgBo/maxresdefault.jpg"
+    // Ajoute d'autres clubs ici si tu veux
+  };
+  return images[clubName] || "https://via.placeholder.com/200x100?text=Stadium";
+}
+
+
+    // Remplir les listes continentales
+    function populateContinentLists() {
+      const europeClubs = clubsData.filter(c => c.continent === "Europe")
+                                  .sort((a, b) => b.trophies - a.trophies);
+      const southAmericaClubs = clubsData.filter(c => c.continent === "South America")
+                                       .sort((a, b) => b.trophies - a.trophies);
+      const africaClubs = clubsData.filter(c => c.continent === "Africa")
+                                 .sort((a, b) => b.trophies - a.trophies);
+
+      // Europe
+      const europeList = document.getElementById('europe-clubs');
+      europeClubs.forEach((club, index) => {
+        const li = document.createElement('li');
+        li.className = 'flex items-center p-2 hover:bg-white/5 rounded-lg';
+        li.innerHTML = `
+          <span class="font-bold ${index < 3 ? 'text-yellow-400' : 'text-gray-300'} mr-3">${index + 1}.</span>
+          <img src="https://flagcdn.com/24x18/${getCountryCode(club.country)}.png" class="mr-2 country-flag">
+          ${club.name} <span class="ml-auto">🏆${club.trophies}</span>
+        `;
+        europeList.appendChild(li);
+      });
+
+      // Amérique du Sud
+      const southAmericaList = document.getElementById('south-america-clubs');
+      southAmericaClubs.forEach((club, index) => {
+        const li = document.createElement('li');
+        li.className = 'flex items-center p-2 hover:bg-white/5 rounded-lg';
+        li.innerHTML = `
+          <span class="font-bold ${index < 2 ? 'text-yellow-400' : 'text-gray-300'} mr-3">${index + 1}.</span>
+          <img src="https://flagcdn.com/24x18/${getCountryCode(club.country)}.png" class="mr-2 country-flag">
+          ${club.name} <span class="ml-auto">🏆${club.trophies}</span>
+        `;
+        southAmericaList.appendChild(li);
+      });
+
+      // Afrique
+      const africaList = document.getElementById('africa-clubs');
+      africaClubs.forEach((club, index) => {
+        const li = document.createElement('li');
+        li.className = 'flex items-center p-2 hover:bg-white/5 rounded-lg';
+        li.innerHTML = `
+          <span class="font-bold ${index < 3 ? 'text-yellow-400' : 'text-gray-300'} mr-3">${index + 1}.</span>
+          <img src="https://flagcdn.com/24x18/${getCountryCode(club.country)}.png" class="mr-2 country-flag">
+          ${club.name} <span class="ml-auto">🏆${club.trophies}</span>
+        `;
+        africaList.appendChild(li);
+      });
+    }
+
+    populateContinentLists();
+
+    function toggleList(listId, btn) {
+  const list = document.getElementById(listId);
+  if (list.classList.contains('max-h-64')) {
+    list.classList.remove('max-h-64');
+    btn.textContent = "Voir moins ←";
+  } else {
+    list.classList.add('max-h-64');
+    btn.textContent = "Voir plus →";
+  }
+}
+
+function filterClubs(query) {
+  query = query.toLowerCase();
+  const markers = document.querySelectorAll('.leaflet-marker-icon');
+  markers.forEach(marker => {
+    const alt = marker.getAttribute("alt") || "";
+    marker.style.display = alt.toLowerCase().includes(query) ? 'block' : 'none';
+  });
+}
+
+
+  </script>
+</body>
+</html>
