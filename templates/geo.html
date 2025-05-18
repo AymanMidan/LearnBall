@@ -15,6 +15,8 @@
   </style>
 </head>
 <body class="min-h-screen bg-gradient-to-br from-indigo-900 to-teal-900 text-white font-sans">
+  {% include 'navbar.html' %}
+
   <!-- Header -->
   <header class="bg-gradient-to-r from-indigo-800/70 to-teal-800/70 py-20 px-6 text-center">
     <h1 class="text-4xl md:text-6xl font-bold mb-4">🌍 Football International</h1>
@@ -87,32 +89,32 @@
           </div>
         </div>
         <div class="text-center bg-white/10 p-6 rounded-xl">
-          <div class="text-5xl mb-4">🎶</div>
-          <h3 class="text-xl font-bold mb-2">Hymnes & Chants</h3>
-          <div class="space-y-4 text-left">
-            <div class="p-3 bg-black/20 rounded-lg">
-              <p class="font-bold">"You'll Never Walk Alone"</p>
-              <p class="text-sm">Liverpool FC</p>
-              <audio controls class="w-full mt-2">
-                <source src="You'll never Walk Alone  Liverpool With Lyrics.mp3" type="audio/mpeg">
-              </audio>
-            </div>
-            <div class="p-3 bg-black/20 rounded-lg">
-              <p class="font-bold">"Hala Madrid"</p>
-              <p class="text-sm">Real Madrid</p>
-              <audio controls class="w-full mt-2">
-                <source src="Hala Madrid...y nada más (feat. RedOne).mp3" type="audio/mpeg">
-              </audio>
-            </div>
-            <div class="p-3 bg-black/20 rounded-lg">
-              <p class="font-bold">"Cant del Barça"</p>
-              <p class="text-sm">Fc Barcelona</p>
-              <audio controls class="w-full mt-2">
-                <source src="NEW VERSION of FC BARCELONA's official ICONIC ANTHEM!!!  Cant del Barça.mp3" type="audio/mpeg">
-              </audio>
-            </div>
-          </div>
-        </div>
+  <div class="text-5xl mb-4">🎶</div>
+  <h3 class="text-xl font-bold mb-2">Hymnes & Chants</h3>
+  <div class="space-y-4 text-left">
+    <div class="p-3 bg-black/20 rounded-lg">
+      <p class="font-bold">"You'll Never Walk Alone"</p>
+      <p class="text-sm">Liverpool FC</p>
+      <audio controls class="w-full mt-2">
+        <source src="{{ url_for('static', filename='audio/Youll_never_walk_alone.mp3') }}" type="audio/mpeg">
+      </audio>
+    </div>
+    <div class="p-3 bg-black/20 rounded-lg">
+      <p class="font-bold">"Hala Madrid"</p>
+      <p class="text-sm">Real Madrid</p>
+      <audio controls class="w-full mt-2">
+        <source src="{{ url_for('static', filename='audio/Hala_madrid.mp3') }}" type="audio/mpeg">
+      </audio>
+    </div>
+    <div class="p-3 bg-black/20 rounded-lg">
+      <p class="font-bold">"Cant del Barça"</p>
+      <p class="text-sm">Fc Barcelona</p>
+      <audio controls class="w-full mt-2">
+        <source src="{{ url_for('static', filename='audio/Cant_del_barca.mp3') }}" type="audio/mpeg">
+      </audio>
+    </div>
+  </div>
+</div>
         <div class="text-center bg-white/10 p-6 rounded-xl">
           <div class="text-5xl mb-4">🍜</div>
           <h3 class="text-xl font-bold mb-2">Gastronomie</h3>
@@ -148,10 +150,16 @@
   </main>
 
   <!-- Footer -->
-  <footer class="bg-black/30 py-8 text-center">
-    <a href="index.html" class="inline-block px-6 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition">
-      ← Retour à l'accueil
-    </a>
+  <footer class="bg-gray-800 py-12 text-center mt-20">
+    <div class="max-w-4xl mx-auto">
+      <a href="/" class="inline-flex items-center px-6 py-3 bg-gray-700 rounded-lg hover:bg-gray-600 transition">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        Retour à l'accueil
+      </a>
+      <p class="mt-6 text-gray-400">But ! Et la géographie n'aura plus de secret pour vous.</p>
+    </div>
   </footer>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -167,7 +175,13 @@
         players: ["Messi", "Xavi", "Iniesta"],
         stadium: "Camp Nou",
         trophies: 101,
-        continent: "Europe"
+        continent: "Europe",
+        history: "Le FC Barcelone, fondé en 1899, est un symbole du catalanisme. La ville de Barcelone est connue pour la Sagrada Família et le parc Güell.",
+        monument: {
+            name: "Sagrada Família",
+            image: "https://sagrada-familia.fr/wp-content/uploads/2024/05/billet-sagrada-familia-0987.jpg",
+            description: "Chef-d'œuvre inachevé de Gaudí, symbole emblématique de Barcelone."
+        }
       },
       { 
         name: "Real Madrid", 
@@ -177,17 +191,29 @@
         players: ["Benzema", "Modric", "Cristiano"],
         stadium: "Santiago Bernabéu",
         trophies: 101,
-        continent: "Europe"
+        continent: "Europe",
+        history: "Club le plus titré d'Europe, fondé en 1902. Madrid est connue pour le Palais Royal, la Puerta del Sol et le musée du Prado.",
+        monument: {
+            name: "Palais Royal de Madrid",
+            image: "https://cdn-imgix.headout.com/media/images/65a28b0ae738eb6c75dac44c508e83c8-23089-madrid-combo--save-2----royal-palace-of-madrid---liria-palace-skip-the-line-tickets-04.jpg?auto=format&w=780&h=384&q=90&fit=crop&ar=16%3A10",
+            description: "Résidence officielle du roi d’Espagne, un joyau architectural au cœur de Madrid."
+        }
       },
       {
-      name: "FC Séville",
-      country: "Espagne",
-      city: "Séville",
-      coords: [37.3841, -5.9734],
-      players: ["Jesús Navas", "Ivan Rakitić", "Sergio Ramos"],
-      stadium: "Ramón Sánchez Pizjuán",
-      trophies: 18,
-      continent: "Europe"
+        name: "FC Séville",
+        country: "Espagne",
+        city: "Séville",
+        coords: [37.3841, -5.9734],
+        players: ["Jesús Navas", "Ivan Rakitić", "Sergio Ramos"],
+        stadium: "Ramón Sánchez Pizjuán",
+        trophies: 18,
+        continent: "Europe",
+        history: "Le club de Séville, fondé en 1890, est réputé pour ses succès en Ligue Europa. Séville est célèbre pour l’Alcazar, la cathédrale et la Plaza de España.",
+        monument: {
+            name: "Cathédrale de Séville",
+            image: "https://www.librevoyageur.com/wp-content/uploads/2019/03/cathedrale-de-seville-visite-librevoyageur.jpg",
+            description: "La plus grande cathédrale gothique au monde, célèbre pour sa tour La Giralda."
+        }
       },
       { 
         name: "Liverpool FC", 
@@ -197,7 +223,13 @@
         players: ["Salah", "Van Dijk", "Gerrard"],
         stadium: "Anfield",
         trophies: 69,
-        continent: "Europe"
+        continent: "Europe",
+        history: "Fondé en 1892, Liverpool est l’un des clubs anglais les plus légendaires. La ville est connue pour ses docks, ses musées maritimes et comme ville natale des Beatles.",
+        monument: {
+          name: "Albert Dock",
+          image: "https://images.musement.com/cover/0158/75/adobestock-201593125-jpeg_header-15774610.jpg",
+          description: "Complexe historique de docks et musée, emblématique du patrimoine maritime de Liverpool."
+        }
       },
       { 
         name: "Manchester United", 
@@ -207,17 +239,29 @@
         players: ["Ronaldo", "Beckham", "Cantona"],
         stadium: "Old Trafford",
         trophies: 68,
-        continent: "Europe"
+        continent: "Europe",
+        history: "Fondé en 1878, c’est l’un des clubs les plus populaires au monde. Manchester est une ville industrielle riche en culture, avec la bibliothèque John Rylands et le musée des sciences.",
+        monument: {
+            name: "Bibliothèque John Rylands",
+            image: "https://manchestermagazine.co.uk/wp-content/uploads/2023/06/The_John_Rylands_Library_Reading_Room_Enclosure.jpg",
+            description: "Bibliothèque néo-gothique remarquable, symbole culturel de Manchester."
+        }
       },
       {
-      name: "Arsenal FC",
-      country: "Angleterre",
-      city: "Londres",
-      coords: [51.5549, -0.1084],
-      players: ["Thierry Henry", "Tony Adams", "Dennis Bergkamp"],
-      stadium: "Emirates Stadium",
-      trophies: 47,
-      continent: "Europe"
+        name: "Arsenal FC",
+        country: "Angleterre",
+        city: "Londres",
+        coords: [51.5549, -0.1084],
+        players: ["Thierry Henry", "Tony Adams", "Dennis Bergkamp"],
+        stadium: "Emirates Stadium",
+        trophies: 47,
+        continent: "Europe",
+        history: "Club fondé en 1886 à Londres, reconnu pour son style de jeu fluide. Londres abrite la Tour de Londres, le Palais de Buckingham et le British Museum.",
+        monument: {
+            name: "Buckingham Palace",
+            image: "https://citymagazine.si/wp-content/uploads/2018/05/shutterstock_457813381.jpg",
+            description: "Palais royal emblématique de Londres, centre de la monarchie britannique."
+        }
       },
       { 
         name: "Paris Saint-Germain", 
@@ -227,7 +271,13 @@
         players: ["Mbappé", "Neymar", "Ibrahimovic"],
         stadium: "Parc des Princes",
         trophies: 48,
-        continent: "Europe"
+        continent: "Europe",
+        history: "Club phare de la capitale française, fondé en 1970. Paris est célèbre pour la Tour Eiffel, le Louvre et la cathédrale Notre-Dame.",
+        monument: {
+            name: "Tour Eiffel",
+            image: "https://media.cntraveler.com/photos/59f9ca17596c0244878c5830/16:9/w_2560%2Cc_limit/Eiffel_Marc-Nouss_Arc-de-Triomphe.jpg",
+            description: "Symbole iconique de Paris et de la France, joyau de l’ingénierie métallique."
+        }
       },
       { 
         name: "Bayern Munich", 
@@ -237,7 +287,13 @@
         players: ["Müller", "Neuer", "Lewandowski"],
         stadium: "Allianz Arena",
         trophies: 70,
-        continent: "Europe"
+        continent: "Europe",
+        history: "Fondé en 1900, le Bayern est le club allemand le plus titré. Munich est connue pour le château de Nymphenburg, la Marienplatz et l’Oktoberfest.",
+        monument: {
+            name: "Château de Nymphenburg",
+            image: "https://images.myguide-cdn.com/munich/companies/munich-nymphenburg-palace-skip-the-line-private-guided-tour/large/munich-nymphenburg-palace-skip-the-line-private-guided-tour-1217799.jpg",
+            description: "Palais baroque somptueux entouré de jardins à la française."
+        }
       },
       { 
         name: "FC Porto", 
@@ -247,7 +303,13 @@
         players: ["Deco", "Hulk", "Pepe"],
         stadium: "Estádio do Dragão",
         trophies: 45,
-        continent: "Europe"
+        continent: "Europe",
+        history: "Fondé en 1893, le FC Porto est l’un des clubs les plus titrés du Portugal. La ville de Porto est renommée pour son vin, le pont Dom Luís I et le quartier Ribeira.",
+        monument: {
+            name: "Pont Dom Luís I",
+            image: "https://img.freepik.com/photos-premium/monument-pont-dom-luis-porto-portugal_451699-1844.jpg",
+            description: "Pont emblématique en fer forgé reliant Porto à Vila Nova de Gaia."
+        }
       },
       // Afrique
       { 
@@ -258,17 +320,30 @@
         players: ["El Karkouri", "Jabrane", "Nahiri"],
         stadium: "Stade Mohammed V",
         trophies: 29,
-        continent: "Africa"
+        continent: "Africa",
+        history: "Fondé en 1937, le Wydad est l’un des clubs les plus titrés du Maroc. Casablanca est connue pour la mosquée Hassan II, la Corniche et son architecture art déco.",
+        monument: {
+            name: "Mosquée Hassan II",
+            image: "https://upload.wikimedia.org/wikipedia/ar/9/93/La_grande_mosqu%C3%A9e_hassan_II_arwiki.jpg",
+            description: "L'une des plus grandes mosquées du monde, située sur la côte de Casablanca."
+        }
+
       },
       { 
-        name: "Raja CA", 
-        country: "Maroc", 
-        city: "Casablanca", 
+        name: "Raja CA",
+        country: "Maroc",
+        city: "Casablanca",
         coords: [33.5709, -7.6689],
         players: ["Zniti", "Moustaoudaa", "Moutouali"],
         stadium: "Stade Mohammed V",
         trophies: 30,
-        continent: "Africa"
+        continent: "Africa",
+        history: "Fondé en 1949, le Raja est un autre club mythique de Casablanca. La ville offre des lieux emblématiques comme l’ancienne médina et le quartier Habous.",
+        monument: {
+            name: "Médina de Casablanca",
+            image: "https://archive.challenge.ma/wp-content/uploads/2016/02/Artisanat-marocain.jpg",
+            description: "Quartier historique traditionnel au cœur de Casablanca."
+        }
       },
       { 
         name: "Al Ahly", 
@@ -278,7 +353,13 @@
         players: ["Aboutrika", "El Khatib", "Sherif"],
         stadium: "Stade International du Caire",
         trophies: 118,
-        continent: "Africa"
+        continent: "Africa",
+        history: "Club égyptien fondé en 1907, le plus titré d’Afrique. Le Caire est célèbre pour les pyramides de Gizeh, le musée du Caire et la citadelle de Saladin.",
+        monument: {
+            name: "Pyramides de Gizeh",
+            image: "https://cdn.generationvoyage.fr/2025/02/Les-pyramides-de-Gizeh-au-coucher-du-soleil-en-Egypte-755x505.jpeg",
+            description: "Merveilles antiques emblématiques de l'Égypte, patrimoine mondial."
+        }
       },
       // Amérique du Sud
       { 
@@ -289,7 +370,13 @@
         players: ["Zico", "Gabigol", "Arrascaeta"],
         stadium: "Maracanã",
         trophies: 69,
-        continent: "South America"
+        continent: "South America",
+        history: "Fondé en 1895, Flamengo est le club le plus populaire du Brésil. Rio de Janeiro est connue pour le Christ Rédempteur, le Pain de Sucre et les plages de Copacabana.",
+        monument: {
+            name: "Christ Rédempteur",
+            image: "https://www.usine-digitale.fr/mediatheque/1/0/3/000152301_896x598_c.jpg",
+            description: "Statue emblématique surplombant Rio, symbole de paix et foi."
+        }
       },
       { 
         name: "Boca Juniors", 
@@ -299,58 +386,94 @@
         players: ["Maradona", "Riquelme", "Tevez"],
         stadium: "La Bombonera",
         trophies: 74,
-        continent: "South America"
+        continent: "South America",
+        history: "Fondé en 1905, ce club de Buenos Aires est célèbre pour sa rivalité avec River Plate. Buenos Aires est connue pour le quartier coloré de La Boca, la Casa Rosada et le théâtre Colón.",
+        monument: {
+            name: "Quartier de La Boca",
+            image: "https://www.voyage-argentine.com/wp-content/uploads/adobestock-95562905-1-1280x800.jpeg",
+            description: "Quartier coloré et touristique de Buenos Aires, riche en culture."
+        }
       },
       {
-  name: "AS Roma",
-  country: "Italie",
-  city: "Rome",
-  coords: [41.9341, 12.4547],
-  players: ["Francesco Totti", "Daniele De Rossi", "Roberto Baggio"],
-  stadium: "Stadio Olimpico",
-  trophies: 30,
-  continent: "Europe"
-},
-{
-  name: "Inter Milan",
-  country: "Italie",
-  city: "Milan",
-  coords: [45.4781, 9.1236],
-  players: ["Javier Zanetti", "Ronaldo", "Giuseppe Meazza"],
-  stadium: "San Siro",
-  trophies: 30,
-  continent: "Europe"
-},
-{
-  name: "AC Milan",
-  country: "Italie", 
-  city: "Milan",
-  coords: [45.4781, 9.1236],
-  players: ["Paolo Maldini", "Franco Baresi", "Kaká"],
-  stadium: "San Siro",
-  trophies: 64,
-  continent: "Europe"
-},
-{
-  name: "Juventus",
-  country: "Italie",
-  city: "Turin",
-  coords: [45.1096, 7.6417],
-  players: ["Alessandro Del Piero", "Gianluigi Buffon", "Michel Platini"],
-  stadium: "Allianz Stadium",
-  trophies: 70,
-  continent: "Europe"
-},
-{
-  name: "Ajax Amsterdam",
-  country: "Pays-Bas",
-  city: "Amsterdam",
-  coords: [52.3143, 4.9416],
-  players: ["Johan Cruyff", "Dennis Bergkamp", "Marco van Basten"],
-  stadium: "Johan Cruyff Arena",
-  trophies: 65,
-  continent: "Europe"
-}
+        name: "AS Roma",
+        country: "Italie",
+        city: "Rome",
+        coords: [41.9341, 12.4547],
+        players: ["Francesco Totti", "Daniele De Rossi", "Roberto Baggio"],
+        stadium: "Stadio Olimpico",
+        trophies: 30,
+        continent: "Europe",
+        history: "Fondée en 1927, la Roma est l’un des deux grands clubs de la capitale italienne. Rome est une ville historique avec le Colisée, le Forum Romain et la fontaine de Trevi.",
+        monument: {
+            name: "Colisée",
+            image: "https://www.italie-authentique.com/app/uploads/sites/23/2018/11/adobestock_111251812.jpeg",
+            description: "Amphithéâtre antique emblématique de Rome et symbole de l’Empire romain."
+        }
+      },
+      {
+        name: "Inter Milan",
+        country: "Italie",
+        city: "Milan",
+        coords: [45.4781, 9.1236],
+        players: ["Javier Zanetti", "Ronaldo", "Giuseppe Meazza"],
+        stadium: "San Siro",
+        trophies: 30,
+        continent: "Europe",
+        history: "Fondé en 1908, l’Inter est un club prestigieux partageant le stade San Siro avec l’AC Milan. Milan est célèbre pour le Duomo, la galerie Vittorio Emanuele II et La Cène de Léonard de Vinci.",
+        monument: {
+            name: "Duomo de Milan",
+            image: "https://www.trace-ta-route.com/wp-content/uploads/2017/04/Milan-Duomo-Cathedrale-Piazza-3-L_Oeil_d_Edouard-1050x700.jpg",
+            description: "Cathédrale gothique majestueuse, cœur spirituel de Milan."
+        }
+      },
+      {
+        name: "AC Milan",
+        country: "Italie",
+        city: "Milan",
+        coords: [45.4781, 9.1236],
+        players: ["Paolo Maldini", "Franco Baresi", "Kaká"],
+        stadium: "San Siro",
+        trophies: 64,
+        continent: "Europe",
+        history: "Fondé en 1899, l’AC Milan est l’un des clubs les plus titrés du monde. Milan est une capitale de la mode et de l’art, avec des monuments comme le Duomo et le théâtre La Scala.",
+        monument: {
+            name: "Théâtre La Scala",
+            image: "https://image-tc.galaxy.tf/wijpeg-blh7rzok07o961p25gjaaywwr/teatro-alla-scala-6114856194-c56e50d264-o-copy-mito-festival-3-4cacdc_standard.jpg?crop=55%2C0%2C871%2C653",
+            description: "Salle d’opéra célèbre, temple de la musique et de la culture à Milan."
+        }
+      },
+      {
+        name: "Juventus",
+        country: "Italie",
+        city: "Turin",
+        coords: [45.1096, 7.6417],
+        players: ["Alessandro Del Piero", "Gianluigi Buffon", "Michel Platini"],
+        stadium: "Allianz Stadium",
+        trophies: 70,
+        continent: "Europe",
+        history: "Club fondé en 1897 à Turin, surnommé 'la Vieille Dame'. Turin est célèbre pour le musée égyptien, la Mole Antonelliana et ses cafés historiques.",
+        monument: {
+            name: "Mole Antonelliana",
+            image: "https://www.latitudeslife.com/wp-content/uploads/Mole_antonelliana_Torino.jpg",
+            description: "Symbole de Turin, ancien temple religieux devenu musée national du cinéma."
+        }
+      },
+      {
+        name: "Ajax Amsterdam",
+        country: "Pays-Bas",
+        city: "Amsterdam",
+        coords: [52.3143, 4.9416],
+        players: ["Johan Cruyff", "Dennis Bergkamp", "Marco van Basten"],
+        stadium: "Johan Cruyff Arena",
+        trophies: 65,
+        continent: "Europe",
+        history: "Fondé en 1900, l’Ajax est connu pour sa formation de jeunes. Amsterdam est célèbre pour ses canaux, le musée Van Gogh et la maison d’Anne Frank.",
+        monument: {
+            name: "Maison d’Anne Frank",
+            image: "https://a.travel-assets.com/findyours-php/viewfinder/images/res70/28000/28268-Anne-Frank-House.jpg",
+            description: "Musée dédié à Anne Frank, symbole poignant de la Seconde Guerre mondiale."
+        }
+      }
     ];
 
     // Initialisation de la carte
@@ -377,11 +500,6 @@
             <p>⭐ Joueurs légendaires: ${club.players.join(", ")}</p>
           </div>
         `);
-        marker.on('click', function () {
-  document.querySelectorAll('.leaflet-marker-icon').forEach(m => m.classList.remove('ring-4', 'ring-yellow-400'));
-  marker._icon.classList.add('ring-4', 'ring-yellow-400');
-});
-
         marker._icon.alt = club.name;
 
     });
@@ -449,7 +567,9 @@
           <img src="https://flagcdn.com/24x18/${getCountryCode(club.country)}.png" class="mr-2 country-flag">
           ${club.name} <span class="ml-auto">🏆${club.trophies}</span>
         `;
-        europeList.appendChild(li);
+        li.addEventListener('click', () => showHistoryModal(club.name));
+europeList.appendChild(li);
+
       });
 
       // Amérique du Sud
@@ -462,7 +582,9 @@
           <img src="https://flagcdn.com/24x18/${getCountryCode(club.country)}.png" class="mr-2 country-flag">
           ${club.name} <span class="ml-auto">🏆${club.trophies}</span>
         `;
-        southAmericaList.appendChild(li);
+        li.addEventListener('click', () => showHistoryModal(club.name));
+southAmericaList.appendChild(li);
+
       });
 
       // Afrique
@@ -475,7 +597,9 @@
           <img src="https://flagcdn.com/24x18/${getCountryCode(club.country)}.png" class="mr-2 country-flag">
           ${club.name} <span class="ml-auto">🏆${club.trophies}</span>
         `;
-        africaList.appendChild(li);
+        li.addEventListener('click', () => showHistoryModal(club.name));
+africaList.appendChild(li);
+
       });
     }
 
@@ -502,6 +626,50 @@ function filterClubs(query) {
 }
 
 
+
+function showHistoryModal(clubName) {
+  const club = clubsData.find(c => c.name === clubName);
+  if (!club) return;
+
+  document.getElementById('modal-club-name').textContent = club.name;
+  document.getElementById('modal-club-history').textContent = club.history || "Informations historiques non disponibles.";
+
+  if (club.monument) {
+    document.getElementById('modal-monument-img').src = club.monument.image;
+    document.getElementById('modal-monument-img').alt = club.monument.name;
+    document.getElementById('modal-monument-name').textContent = club.monument.name;
+    document.getElementById('modal-monument-desc').textContent = club.monument.description;
+    document.getElementById('modal-monument').style.display = "flex";
+  } else {
+    document.getElementById('modal-monument').style.display = "none";
+  }
+
+  document.getElementById('history-modal').classList.remove('hidden');
+}
+
+
+function closeHistoryModal() {
+  document.getElementById('history-modal').classList.add('hidden');
+}
+
+
   </script>
+
+
+  <div id="history-modal" class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 hidden">
+  <div class="bg-white text-black p-6 rounded-xl w-full max-w-2xl relative overflow-auto max-h-[80vh]">
+    <button onclick="closeHistoryModal()" class="absolute top-2 right-2 text-red-500 font-bold text-xl">×</button>
+    <h2 id="modal-club-name" class="text-2xl font-bold mb-4"></h2>
+    <p id="modal-club-history" class="text-gray-800 mb-6"></p>
+
+    <div id="modal-monument" class="flex flex-col items-center gap-4">
+      <img id="modal-monument-img" src="" alt="" class="max-w-full rounded-lg shadow-md" style="max-height: 300px; object-fit: cover;">
+      <p id="modal-monument-name" class="font-semibold text-lg"></p>
+      <p id="modal-monument-desc" class="text-gray-700 text-center"></p>
+    </div>
+  </div>
+</div>
+
+
 </body>
 </html>

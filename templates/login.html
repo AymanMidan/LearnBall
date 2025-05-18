@@ -1,0 +1,102 @@
+<!-- login.html -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Connexion - LearnBall</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 0.3;
+      }
+      100% {
+        transform: translateY(-120vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    .animate-floating {
+      animation: floatUp 20s linear infinite;
+    }
+
+    .delay-1000 {
+      animation-delay: 5s;
+    }
+
+    .delay-2000 {
+      animation-delay: 10s;
+    }
+
+    /* Terrain de foot flou en arrière-plan */
+    .terrain-overlay::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: url('https://previews.123rf.com/images/startstock/startstock2204/startstock220400005/184125031-strat%C3%A9gie-de-football-tactique-de-jeu-de-football-s-appuyant-sur-le-tableau-sch%C3%A9ma-de-jeu-de-footbal.jpg');
+      background-size: cover;
+      background-position: center;
+      opacity: 0.2;
+      filter: blur(3px);
+      z-index: -20;
+    }
+  </style>
+</head>
+
+<body class="min-h-screen bg-gradient-to-br from-green-800 to-blue-900 flex items-center justify-center relative terrain-overlay">
+
+
+  
+
+  <div class="bg-white/10 backdrop-blur-md p-8 rounded-2xl shadow-lg border border-white/20 max-w-md w-full z-10">
+    <h2 class="text-3xl font-bold text-white text-center mb-6">🔐 Connexion</h2>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="w-full mb-6">
+        {% for category, message in messages %}
+          <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded text-sm text-center shadow-md transition">
+            {{ message }}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+    <form action="/login" method="POST" class="space-y-6">
+      <div>
+        <label class="block text-white mb-1">Nom d'utilisateur ou Email</label>
+        <input type="text" name="username" required class="w-full px-4 py-2 rounded-lg bg-white/20 text-white placeholder-white/60 border border-white/20 focus:outline-none focus:ring-2 focus:ring-yellow-400">
+      </div>
+      <div>
+        <label class="block text-white mb-1">Mot de passe</label>
+        <input type="password" name="password" required class="w-full px-4 py-2 rounded-lg bg-white/20 text-white placeholder-white/60 border border-white/20 focus:outline-none focus:ring-2 focus:ring-yellow-400">
+      </div>
+      <button type="submit" class="w-full py-2 bg-yellow-400 hover:bg-yellow-500 text-black font-bold rounded-lg transition">Se connecter</button>
+    </form>
+    <p class="text-center text-white/70 mt-4">Pas encore de compte ? <a href="/signup" class="text-yellow-400 hover:underline">Créer un compte</a></p>
+  </div>
+
+  <!-- Ballons animés en fond -->
+  <div class="absolute inset-0 -z-10 overflow-hidden pointer-events-none">
+    <div class="animate-floating w-16 h-16 absolute left-[10%] top-[80%]">
+      <img src="https://cdn-icons-png.flaticon.com/512/861/861512.png" class="w-full h-full object-contain opacity-100" />
+    </div>
+    <div class="animate-floating delay-1000 w-20 h-20 absolute left-[50%] top-[90%]">
+      <img src="https://cdn-icons-png.flaticon.com/512/2972/2972215.png" class="w-full h-full object-contain opacity-30" />
+    </div>
+    <div class="animate-floating delay-2000 w-14 h-14 absolute left-[80%] top-[85%]">
+      <img src="https://cdn-icons-png.flaticon.com/512/808/808412.png" class="w-full h-full object-contain opacity-30" />
+    </div>
+  </div>
+
+</body>
+</html>

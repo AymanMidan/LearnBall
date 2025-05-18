@@ -1,0 +1,62 @@
+<!-- navbar.html -->
+<nav class="fixed top-0 left-0 w-full z-50 flex justify-between items-center bg-white/20 backdrop-blur-md text-white px-6 py-4 border-b border-white/10">
+  <!-- Logo -->
+  <!-- Logo cliquable -->
+<a href="/" class="flex items-center gap-2 hover:opacity-80 transition-opacity">
+  <img src="/static/icons/logo.png" alt="Logo" class="w-8 h-8 rounded-full">
+  <span class="text-xl font-bold">LearnBall</span>
+</a>
+
+  <!-- Partie Droite -->
+  {% if session.get('user_id') %}
+    <div class="relative group" id="user-menu">
+      <div class="flex items-center gap-3 cursor-pointer">
+        <span class="font-semibold hidden sm:inline">{{ session['username'] }}</span>
+        <img src="/static/icons/avatar.jpg" alt="Avatar" class="w-10 h-10 rounded-full border-2 border-white">
+      </div>
+
+      <!-- Menu déroulant -->
+      <div class="absolute right-0 top-full mt-2 w-56 bg-white text-black rounded-xl shadow-xl 
+                  opacity-0 invisible group-hover:opacity-100 group-hover:visible
+                  transition-all duration-300 transform origin-top">
+        <div class="py-3">
+          <ul class="space-y-2 text-sm font-semibold">
+            <li><a href="/dashboard" class="block px-4 py-2 hover:bg-gray-100 hover:text-blue-600">Tableau de bord</a></li>
+            <li><a href="/messages" class="block px-4 py-2 hover:bg-gray-100 hover:text-blue-600">Messages & Cours</a></li>
+            <li><a href="/annonces" class="block px-4 py-2 hover:bg-gray-100 hover:text-blue-600">Annonces</a></li>
+            <hr class="my-2 border-gray-200">
+            <li><a href="/compte" class="block px-4 py-2 hover:bg-gray-100 hover:text-blue-600">Compte</a></li>
+            <li><a href="/logout" id="logout-btn" class="block px-4 py-2 text-red-500 hover:bg-gray-100 hover:text-red-700">Se déconnecter</a></li>
+          </ul>
+        </div>
+        <div class="absolute -top-4 left-0 w-full h-4"></div>
+      </div>
+    </div>
+  {% else %}
+    <a href="/login" class="bg-yellow-400 text-black px-4 py-2 rounded-lg font-semibold hover:bg-yellow-500 transition">
+      Se connecter
+    </a>
+  {% endif %}
+</nav>
+
+<style>
+  body { padding-top: 5rem; }
+</style>
+
+<script>
+document.getElementById('logout-btn')?.addEventListener('click', function(e) {
+  e.preventDefault();
+  
+  // Envoie la requête de déconnexion
+  fetch('/logout', { 
+    method: 'GET',
+    headers: {
+      'Cache-Control': 'no-cache'
+    }
+  }).then(() => {
+    // Force le rechargement complet
+    window.location.href = '/';
+    window.location.reload(true);
+  });
+});
+</script>
