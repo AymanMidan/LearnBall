@@ -3,93 +3,680 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Quiz - LearnBall</title>
+  <title>Quiz Champion - LearnBall</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/confetti-js/0.0.18/confetti.min.js"></script>
 </head>
-<body class="min-h-screen bg-gradient-to-br from-purple-900 to-red-900 text-white font-sans">
+<body class="min-h-screen bg-gradient-to-br from-purple-900 to-red-900 text-white font-[Poppins]">
   {% include 'navbar.html' %}
 
-  <header class="bg-gradient-to-r from-purple-800/70 to-red-800/70 py-20 px-6 text-center">
-    <h1 class="text-4xl md:text-6xl font-bold mb-4">🧠 Quiz Foot Éducatif</h1>
-    <p class="text-xl opacity-90">Teste tes connaissances et deviens un champion !</p>
+  <div id="navbar-placeholder">
+    <!-- Navbar sera inséré ici -->
+  </div>
+
+  <header class="bg-gradient-to-r from-purple-800/70 to-red-800/70 py-16 px-6 text-center animate__animated animate__fadeIn">
+    <h1 class="text-4xl md:text-6xl font-bold mb-4">🧠 Quiz Football Éducatif</h1>
+    <p class="text-xl opacity-90 mb-6">Teste tes connaissances et deviens un champion !</p>
+    
+    <div class="flex flex-wrap justify-center gap-4 max-w-3xl mx-auto mt-8">
+      <button id="cat-all" class="category-btn px-4 py-2 rounded-full bg-white/20 hover:bg-white/30 transition active">Tout</button>
+      <button id="cat-maths" class="category-btn px-4 py-2 rounded-full bg-white/20 hover:bg-white/30 transition">Mathématiques</button>
+      <button id="cat-geo" class="category-btn px-4 py-2 rounded-full bg-white/20 hover:bg-white/30 transition">Géographie</button>
+      <button id="cat-histoire" class="category-btn px-4 py-2 rounded-full bg-white/20 hover:bg-white/30 transition">Histoire</button>
+      <button id="cat-regles" class="category-btn px-4 py-2 rounded-full bg-white/20 hover:bg-white/30 transition">Règles</button>
+      <button id="cat-langues" class="category-btn px-4 py-2 rounded-full bg-white/20 hover:bg-white/30 transition">Langues</button>
+    </div>
+    
+    <div class="flex justify-center gap-6 mt-6">
+      <div class="difficulty-selector">
+        <label class="block text-yellow-300 mb-2">Difficulté</label>
+        <select id="difficulty" class="bg-white/20 rounded-lg px-4 py-2 w-full">
+          <option value="debutant">Débutant</option>
+          <option value="intermediaire">Intermédiaire</option>
+          <option value="expert">Expert</option>
+          <option value="mixte" selected>Mixte</option>
+        </select>
+      </div>
+      
+      <div class="questions-selector">
+        <label class="block text-yellow-300 mb-2">Nombre de questions</label>
+        <select id="question-count" class="bg-white/20 rounded-lg px-4 py-2 w-full">
+          <option value="5">5 questions</option>
+          <option value="10" selected>10 questions</option>
+          <option value="15">15 questions</option>
+          <option value="20">20 questions</option>
+        </select>
+      </div>
+    </div>
   </header>
 
-  <main class="max-w-4xl mx-auto px-6 py-12">
-    <div id="quiz-container" class="bg-white/10 backdrop-blur-md rounded-2xl p-8 border border-white/20">
-      <div id="progress" class="mb-4 text-yellow-400 font-bold">Question 1/5</div>
-      <div id="question" class="text-2xl font-bold mb-6"></div>
-      <div id="options" class="grid gap-4 mb-8"></div>
+  <main class="max-w-4xl mx-auto px-6 py-8">
+    <!-- Section d'accueil -->
+    <div id="welcome-screen" class="bg-white/10 backdrop-blur-md rounded-2xl p-8 border border-white/20 text-center animate__animated animate__fadeIn">
+      <img src="/static/icons/quiz.jpeg" alt="LearnBall Quiz" class="w-14 h-14 rounded-full"/>
+      <h2 class="text-3xl font-bold mb-4">Prêt à tester tes connaissances ?</h2>
+      <p class="mb-8">Ce quiz combine le football et l'apprentissage pour te faire progresser tout en t'amusant !</p>
+      
+      <div class="mb-8 grid md:grid-cols-3 gap-4 text-left">
+        <div class="bg-white/10 p-4 rounded-lg">
+          <h3 class="font-bold text-yellow-300 mb-2">📊 Statistiques</h3>
+          <p>Suis ta progression et améliore tes performances au fil du temps</p>
+        </div>
+        <div class="bg-white/10 p-4 rounded-lg">
+          <h3 class="font-bold text-yellow-300 mb-2">🏆 Récompenses</h3>
+          <p>Gagne des badges et débloque des niveaux en progressant</p>
+        </div>
+        <div class="bg-white/10 p-4 rounded-lg">
+          <h3 class="font-bold text-yellow-300 mb-2">🔄 Questions uniques</h3>
+          <p>Des questions générées dynamiquement pour une expérience toujours nouvelle</p>
+        </div>
+      </div>
+      
+      <button id="start-quiz-btn" class="px-8 py-4 bg-gradient-to-r from-green-500 to-blue-500 rounded-lg font-bold text-xl animate-pulse hover:scale-105 transition">
+        Commencer le Quiz
+      </button>
+    </div>
+    
+    <!-- Container du Quiz -->
+    <div id="quiz-container" class="bg-white/10 backdrop-blur-md rounded-2xl p-8 border border-white/20 hidden">
+      <div class="flex justify-between items-center mb-6">
+        <div id="progress" class="text-yellow-400 font-bold">Question 1/10</div>
+        <div id="timer" class="text-lg font-bold">30</div>
+      </div>
+      
+      <div class="w-full bg-white/20 rounded-full h-2 mb-6">
+        <div id="progress-bar" class="bg-gradient-to-r from-green-500 to-blue-500 h-2 rounded-full" style="width: 10%"></div>
+      </div>
+      
+      <div id="question-container" class="animate__animated animate__fadeIn">
+        <div id="category-badge" class="inline-block px-3 py-1 bg-yellow-500/20 text-yellow-300 rounded-full text-sm mb-2">Mathématiques</div>
+        <div id="question" class="text-2xl font-bold mb-6"></div>
+        <div id="image-container" class="mb-6 hidden">
+          <img id="question-image" src="" alt="Question Image" class="mx-auto rounded-lg max-h-64"/>
+        </div>
+        <div id="options" class="grid gap-4 mb-8"></div>
+      </div>
+      
       <button id="next-btn" class="px-6 py-3 bg-gradient-to-r from-green-500 to-blue-500 rounded-lg font-bold hidden">
         Suivant →
       </button>
-      <div id="result" class="mt-6 hidden">
+      
+      <div id="result" class="mt-6 hidden animate__animated animate__fadeIn">
+        <div id="feedback" class="text-center text-2xl font-bold mb-4"></div>
         <div id="explanation" class="bg-black/20 p-4 rounded-lg mb-4"></div>
         <div id="score" class="text-xl font-bold"></div>
       </div>
     </div>
+    
+    <!-- Résultats finaux -->
+    <div id="final-results" class="bg-white/10 backdrop-blur-md rounded-2xl p-8 border border-white/20 text-center hidden animate__animated animate__fadeIn">
+      <h2 class="text-3xl font-bold mb-6">Quiz Terminé !</h2>
+      <div id="confetti-container" class="w-full h-20 relative mb-6"></div>
+      
+      <div id="final-score-display" class="mb-8">
+        <div class="text-5xl font-bold mb-2">0/10</div>
+        <div class="text-2xl mb-2">0%</div>
+        <div id="final-message" class="text-xl mb-4">Message</div>
+      </div>
+      
+      <div class="grid md:grid-cols-2 gap-8 mb-8">
+        <div class="bg-white/10 p-6 rounded-lg">
+          <h3 class="text-xl font-bold mb-4">Statistiques</h3>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <p class="text-yellow-300">Temps moyen</p>
+              <p id="avg-time" class="text-2xl font-bold">0s</p>
+            </div>
+            <div>
+              <p class="text-yellow-300">Streak max</p>
+              <p id="max-streak" class="text-2xl font-bold">0</p>
+            </div>
+            <div>
+              <p class="text-yellow-300">Catégorie forte</p>
+              <p id="best-category" class="text-2xl font-bold">-</p>
+            </div>
+            <div>
+              <p class="text-yellow-300">Catégorie faible</p>
+              <p id="worst-category" class="text-2xl font-bold">-</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="bg-white/10 p-6 rounded-lg">
+          <h3 class="text-xl font-bold mb-4">Badges débloqués</h3>
+          <div id="badges-container" class="flex flex-wrap justify-center gap-4">
+            <!-- Les badges seront ajoutés ici -->
+          </div>
+        </div>
+      </div>
+      
+      <div class="flex flex-wrap justify-center gap-4">
+        <button id="replay-btn" class="px-6 py-3 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-lg font-bold">
+          Rejouer
+        </button>
+        <button id="share-btn" class="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg font-bold">
+          Partager mon score
+        </button>
+        <button id="view-all-questions-btn" class="px-6 py-3 bg-white/20 rounded-lg font-bold">
+          Revoir mes réponses
+        </button>
+      </div>
+    </div>
+    
+    <!-- Revue des questions -->
+    <div id="review-container" class="bg-white/10 backdrop-blur-md rounded-2xl p-8 border border-white/20 hidden animate__animated animate__fadeIn mt-6">
+      <h3 class="text-2xl font-bold mb-6">Revue des questions</h3>
+      <div id="questions-review" class="space-y-6">
+        <!-- Les questions répondues seront listées ici -->
+      </div>
+      <button id="back-to-results-btn" class="mt-8 px-6 py-3 bg-white/20 rounded-lg font-bold">
+        Retour aux résultats
+      </button>
+    </div>
   </main>
 
+  <!-- Footer -->
+  <footer class="bg-gradient-to-b from-transparent to-purple-100/20 dark:to-purple-900/20 py-12 text-center">
+    <a href="/" class="inline-flex items-center px-8 py-3 bg-white/10 backdrop-blur-md rounded-xl hover:bg-white/20 dark:hover:bg-gray-700/50 transition border border-white/20 shadow-lg group">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+      </svg>
+      Retour à l'accueil
+    </a>
+    <div class="mt-6 text-sm text-gray-500 dark:text-gray-400">
+      LearnBall - L'apprentissage à travers le football
+    </div>
+  </footer>
+
   <script>
-    // Données du quiz enrichies
-    const quizData = [
-      {
-        question: "Si une équipe marque 2 buts en première mi-temps et 3 en seconde, quel est le score final ?",
-        options: ["2-3", "3-2", "5-0"],
-        answer: 2,
-        explanation: "2 + 3 = 5 buts au total",
-        category: "maths"
+    // Base de données étendue de questions
+    const questionsDB = {
+      maths: {
+        debutant: [
+          {
+            id: "m1",
+            question: "Si une équipe marque 2 buts en première mi-temps et 3 en seconde, quel est le score final ?",
+            options: ["2-3", "3-2", "5-0", "0-5"],
+            answer: 2,
+            explanation: "2 + 3 = 5 buts au total, donc le score est de 5-0 pour cette équipe.",
+            image: null
+          },
+          {
+            id: "m2",
+            question: "Un joueur court à une vitesse moyenne de 8 km/h pendant 45 minutes. Quelle distance a-t-il parcourue ?",
+            options: ["4 km", "6 km", "8 km", "10 km"],
+            answer: 1,
+            explanation: "Distance = Vitesse × Temps. 8 km/h × (45/60) h = 8 × 0,75 = 6 km",
+            image: null
+          },
+          {
+            id: "m3",
+            question: "Un stade de football a la forme d'un rectangle de 105m de long et 68m de large. Quelle est sa superficie ?",
+            options: ["6340 m²", "7140 m²", "8520 m²", "9150 m²"],
+            answer: 1,
+            explanation: "Superficie = Longueur × Largeur = 105 × 68 = 7140 m²",
+            image: null
+          }
+        ],
+        intermediaire: [
+          {
+            id: "m4",
+            question: "Si une équipe a 60% de possession et 12 tirs cadrés, quelle est sa probabilité approximative de marquer au moins un but ?",
+            options: ["25%", "50%", "75%", "98%"],
+            answer: 3,
+            explanation: "Avec un taux de conversion moyen de 35% par tir cadré, la probabilité de marquer au moins un but sur 12 tirs est d'environ 98%.",
+            image: null
+          },
+          {
+            id: "m5",
+            question: "Un attaquant a marqué 15 buts en 20 matchs. S'il maintient ce ratio, combien de buts marquera-t-il en une saison de 38 matchs ?",
+            options: ["25,5 buts", "28,5 buts", "30 buts", "32 buts"],
+            answer: 1,
+            explanation: "15/20 = x/38, donc x = (15 × 38) / 20 = 28,5 buts",
+            image: null
+          }
+        ],
+        expert: [
+          {
+            id: "m6",
+            question: "Si la probabilité qu'une équipe gagne un match est de 0,7, quelle est la probabilité qu'elle gagne au moins 2 matchs sur 3 ?",
+            options: ["0,784", "0,874", "0,916", "0,973"],
+            answer: 2,
+            explanation: "Probabilité de gagner exactement 2 matchs : C(3,2) × 0,7² × 0,3 = 3 × 0,49 × 0,3 = 0,441. Probabilité de gagner 3 matchs : 0,7³ = 0,343. Total : 0,441 + 0,343 = 0,784",
+            image: null
+          }
+        ]
       },
-      {
-        question: "Quel pays a inventé le football moderne ?",
-        options: ["Brésil", "France", "Angleterre"],
-        answer: 2,
-        explanation: "Les règles modernes ont été codifiées en Angleterre en 1863",
-        category: "histoire"
+      geo: {
+        debutant: [
+          {
+            id: "g1",
+            question: "Dans quel pays se trouve le stade Camp Nou ?",
+            options: ["Italie", "Espagne", "Portugal", "France"],
+            answer: 1,
+            explanation: "Le Camp Nou est situé à Barcelone, en Espagne.",
+            image: null
+          },
+          {
+            id: "g2",
+            question: "Quel continent a remporté le plus de Coupes du Monde ?",
+            options: ["Europe", "Amérique du Sud", "Amérique du Nord", "Afrique"],
+            answer: 0,
+            explanation: "L'Europe a remporté 12 Coupes du Monde (Allemagne, Italie, France, Angleterre, Espagne), contre 9 pour l'Amérique du Sud.",
+            image: null
+          }
+        ],
+        intermediaire: [
+          {
+            id: "g3",
+            question: "Classez ces pays par nombre de participations en Coupe du Monde (du plus au moins) : France, Argentine, Mexique",
+            options: ["Mexique, Argentine, France", "Argentine, Mexique, France", "France, Argentine, Mexique", "Argentine, France, Mexique"],
+            answer: 0,
+            explanation: "Le Mexique a participé à 16 Coupes du Monde, l'Argentine à 15 et la France à 14.",
+            image: null
+          }
+        ],
+        expert: [
+          {
+            id: "g4",
+            question: "Quel est le pays qui possède le plus grand nombre de clubs professionnels de football ?",
+            options: ["Brésil", "Angleterre", "Allemagne", "Espagne"],
+            answer: 0,
+            explanation: "Le Brésil possède plus de 800 clubs professionnels, ce qui en fait le pays avec le plus grand nombre.",
+            image: null
+          }
+        ]
       },
-      {
-        question: "Combien de joueurs composent une équipe de football ?",
-        options: ["9", "11", "13"],
-        answer: 1,
-        explanation: "11 joueurs dont 1 gardien",
-        category: "règles"
+      histoire: {
+        debutant: [
+          {
+            id: "h1",
+            question: "Quel pays a inventé le football moderne ?",
+            options: ["Brésil", "France", "Angleterre", "Allemagne"],
+            answer: 2,
+            explanation: "Les règles modernes ont été codifiées en Angleterre en 1863 par la Football Association.",
+            image: null
+          },
+          {
+            id: "h2",
+            question: "En quelle année a eu lieu la première Coupe du Monde de football ?",
+            options: ["1920", "1930", "1950", "1958"],
+            answer: 1,
+            explanation: "La première Coupe du Monde de football a eu lieu en 1930 en Uruguay.",
+            image: null
+          }
+        ],
+        intermediaire: [
+          {
+            id: "h3",
+            question: "Quel joueur a remporté le plus de Ballons d'Or ?",
+            options: ["Cristiano Ronaldo", "Pelé", "Lionel Messi", "Diego Maradona"],
+            answer: 2,
+            explanation: "Lionel Messi a remporté 8 Ballons d'Or, plus que tout autre joueur.",
+            image: null
+          }
+        ],
+        expert: [
+          {
+            id: "h4",
+            question: "Avant la création de la FIFA en 1904, quel était le premier tournoi international de football ?",
+            options: ["British Home Championship", "Copa América", "Tournoi olympique", "Coupe Intercontinentale"],
+            answer: 0,
+            explanation: "Le British Home Championship, créé en 1883, opposait l'Angleterre, l'Écosse, le Pays de Galles et l'Irlande (plus tard l'Irlande du Nord).",
+            image: null
+          }
+        ]
       },
-      {
-        question: "Si une équipe a 60% de possession et 12 tirs cadrés, quelle est sa probabilité approximative de marquer?",
-        options: ["20%", "35%", "50%", "75%"],
-        answer: 1,
-        explanation: "En moyenne, 35% des tirs cadrés aboutissent à un but en ligue professionnelle",
-        category: "maths"
+      regles: {
+        debutant: [
+          {
+            id: "r1",
+            question: "Combien de joueurs composent une équipe de football sur le terrain ?",
+            options: ["9", "10", "11", "12"],
+            answer: 2,
+            explanation: "11 joueurs dont 1 gardien",
+            image: null
+          },
+          {
+            id: "r2",
+            question: "Quelle est la durée standard d'un match de football professionnel ?",
+            options: ["70 minutes", "80 minutes", "90 minutes", "120 minutes"],
+            answer: 2,
+            explanation: "Un match standard dure 90 minutes, divisées en deux mi-temps de 45 minutes.",
+            image: null
+          }
+        ],
+        intermediaire: [
+          {
+            id: "r3",
+            question: "Combien de remplacements sont autorisés dans un match de football international ?",
+            options: ["3 remplacements", "4 remplacements", "5 remplacements", "6 remplacements"],
+            answer: 2,
+            explanation: "Depuis la pandémie de COVID-19, 5 remplacements sont autorisés en compétitions internationales.",
+            image: null
+          }
+        ],
+        expert: [
+          {
+            id: "r4",
+            question: "Selon les règles officielles de la FIFA, quelle est la circonférence maximale autorisée pour un ballon de football ?",
+            options: ["68 cm", "70 cm", "72 cm", "74 cm"],
+            answer: 1,
+            explanation: "Selon les lois du jeu, un ballon de football doit avoir une circonférence comprise entre 68 et 70 cm.",
+            image: null
+          }
+        ]
       },
-      {
-        question: "Quel pays a remporté le plus de Coupes du Monde?",
-        options: ["Brésil", "Allemagne", "Italie", "Argentine"],
-        answer: 0,
-        explanation: "Le Brésil a remporté 5 Coupes du Monde (1958, 1962, 1970, 1994, 2002)",
-        category: "géographie"
+      langues: {
+        debutant: [
+          {
+            id: "l1",
+            question: "Comment dit-on 'but' en anglais ?",
+            options: ["Door", "Goal", "Point", "Score"],
+            answer: 1,
+            explanation: "'Goal' est le terme anglais pour 'but' au football.",
+            image: null
+          },
+          {
+            id: "l2",
+            question: "Comment dit-on 'arbitre' en espagnol ?",
+            options: ["Árbitro", "Referee", "Juez", "Controlador"],
+            answer: 0,
+            explanation: "'Árbitro' est le terme espagnol pour 'arbitre'.",
+            image: null
+          }
+        ],
+        intermediaire: [
+          {
+            id: "l3",
+            question: "Quel est le terme allemand pour 'tir au but' ?",
+            options: ["Torschuss", "Schießen", "Fußschlag", "Ballschuss"],
+            answer: 0,
+            explanation: "'Torschuss' signifie littéralement 'tir au but' en allemand.",
+            image: null
+          }
+        ],
+        expert: [
+          {
+            id: "l4",
+            question: "Dans combien de langues officielles la FIFA communique-t-elle ?",
+            options: ["2", "4", "6", "8"],
+            answer: 1,
+            explanation: "La FIFA utilise 4 langues officielles : anglais, français, allemand et espagnol.",
+            image: null
+          }
+        ]
+      }
+    };
+
+    // Badges à débloquer
+    const badges = [
+      { 
+        id: "perfect_score", 
+        name: "Score Parfait", 
+        description: "Obtenir 100% de bonnes réponses", 
+        icon: "🏆",
+        condition: stats => stats.percentage === 100
+      },
+      { 
+        id: "math_genius", 
+        name: "Génie des Maths", 
+        description: "Répondre correctement à toutes les questions de mathématiques", 
+        icon: "🧮",
+        condition: stats => stats.categoryScores.maths && stats.categoryScores.maths.correct === stats.categoryScores.maths.total
+      },
+      { 
+        id: "quick_thinker", 
+        name: "Esprit Vif", 
+        description: "Répondre à toutes les questions en moins de 10 secondes en moyenne", 
+        icon: "⚡",
+        condition: stats => stats.avgTime < 10
+      },
+      { 
+        id: "streak_master", 
+        name: "Maître de la Série", 
+        description: "Obtenir une série de 5 bonnes réponses consécutives", 
+        icon: "🔥",
+        condition: stats => stats.maxStreak >= 5
+      },
+      { 
+        id: "all_rounder", 
+        name: "Polyvalent", 
+        description: "Obtenir au moins une bonne réponse dans chaque catégorie", 
+        icon: "🌟",
+        condition: stats => {
+          const categories = ["maths", "geo", "histoire", "regles", "langues"];
+          return categories.every(cat => 
+            stats.categoryScores[cat] && stats.categoryScores[cat].correct > 0
+          );
+        }
       }
     ];
 
-    let currentQuestion = 0;
-    let score = 0;
+    // Variables d'état
+    let quizState = {
+      questions: [],
+      currentQuestion: 0,
+      score: 0,
+      currentStreak: 0,
+      maxStreak: 0,
+      startTime: 0,
+      questionTimes: [],
+      answeredQuestions: [],
+      categoryScores: {},
+      selectedCategory: "all",
+      selectedDifficulty: "mixte",
+      questionCount: 10
+    };
 
-    // Charger une question
+    // DOM Elements
+    const welcomeScreen = document.getElementById('welcome-screen');
+    const quizContainer = document.getElementById('quiz-container');
+    const finalResults = document.getElementById('final-results');
+    const reviewContainer = document.getElementById('review-container');
+    const progressBar = document.getElementById('progress-bar');
+    const timerElement = document.getElementById('timer');
+    
+    // Initialisation
+    document.addEventListener('DOMContentLoaded', function() {
+      // Insérer une navbar factice pour la démonstration
+      
+      
+      // Écouteurs d'événements pour les boutons
+      document.getElementById('start-quiz-btn').addEventListener('click', startQuiz);
+      document.getElementById('next-btn').addEventListener('click', nextQuestion);
+      document.getElementById('replay-btn').addEventListener('click', resetQuiz);
+      document.getElementById('view-all-questions-btn').addEventListener('click', showQuestionsReview);
+      document.getElementById('back-to-results-btn').addEventListener('click', () => {
+        reviewContainer.classList.add('hidden');
+        finalResults.classList.remove('hidden');
+      });
+      document.getElementById('share-btn').addEventListener('click', shareResults);
+      
+      // Filtres de catégories
+      document.querySelectorAll('.category-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active', 'bg-yellow-500/50'));
+          this.classList.add('active', 'bg-yellow-500/50');
+          quizState.selectedCategory = this.id.replace('cat-', '');
+        });
+      });
+      
+      // Sélecteurs de difficulté et nombre de questions
+      document.getElementById('difficulty').addEventListener('change', function() {
+        quizState.selectedDifficulty = this.value;
+      });
+      
+      document.getElementById('question-count').addEventListener('change', function() {
+        quizState.questionCount = parseInt(this.value);
+      });
+    });
+
+    // Fonctions de gestion du quiz
+    function startQuiz() {
+      welcomeScreen.classList.add('hidden');
+      quizContainer.classList.remove('hidden');
+      
+      // Générer les questions basées sur les sélections
+      generateQuestions();
+      
+      // Démarrer avec la première question
+      loadQuestion();
+      
+      // Démarrer le timer
+      quizState.startTime = Date.now();
+      startTimer();
+    }
+    
+    function generateQuestions() {
+      const allQuestions = [];
+      quizState.categoryScores = {};
+      
+      // Filtrer par catégories
+      const categories = quizState.selectedCategory === "all" 
+        ? Object.keys(questionsDB) 
+        : [quizState.selectedCategory];
+      
+      // Collecter toutes les questions selon les critères
+      categories.forEach(category => {
+  quizState.categoryScores[category] = { correct: 0, total: 0 };  // ✅ AJOUTER CETTE LIGNE
+
+  let difficulties = [];
+  if (quizState.selectedDifficulty === "mixte") {
+    difficulties = ["debutant", "intermediaire", "expert"];
+  } else {
+    difficulties = [quizState.selectedDifficulty];
+  }
+
+  difficulties.forEach(difficulty => {
+    if (questionsDB[category][difficulty]) {
+      questionsDB[category][difficulty].forEach(q => {
+        allQuestions.push({
+          ...q,
+          category: category,
+          difficulty: difficulty
+        });
+      });
+    }
+  });
+});
+
+      
+      // Mélanger aléatoirement les questions
+      const shuffled = allQuestions.sort(() => 0.5 - Math.random());
+      
+      // Sélectionner le nombre demandé de questions
+      quizState.questions = shuffled.slice(0, quizState.questionCount);
+      quizState.currentQuestion = 0;
+      quizState.score = 0;
+      quizState.currentStreak = 0;
+      quizState.maxStreak = 0;
+      quizState.questionTimes = [];
+      quizState.answeredQuestions = [];
+    }
+    
+    let timerInterval;
+    let secondsLeft = 30;
+    
+    function startTimer() {
+      clearInterval(timerInterval);
+      secondsLeft = 30;
+      timerElement.textContent = secondsLeft;
+      
+      timerInterval = setInterval(() => {
+        secondsLeft--;
+        timerElement.textContent = secondsLeft;
+        
+        if (secondsLeft <= 5) {
+          timerElement.classList.add('text-red-500', 'animate-pulse');
+        } else {
+          timerElement.classList.remove('text-red-500', 'animate-pulse');
+        }
+        
+        if (secondsLeft <= 0) {
+          clearInterval(timerInterval);
+          // Temps écoulé, passer à la question suivante
+          handleTimeOut();
+        }
+      }, 1000);
+    }
+    
+    function handleTimeOut() {
+      // Marquer la question comme incorrecte
+      const q = quizState.questions[quizState.currentQuestion];
+      quizState.answeredQuestions.push({
+        ...q,
+        userAnswer: null,
+        correct: false,
+        timeTaken: 30
+      });
+      
+      // Mettre à jour les statistiques de catégorie
+      quizState.categoryScores[q.category].total++;
+      
+      // Réinitialiser le streak
+      quizState.currentStreak = 0;
+      
+      // Afficher la bonne réponse
+      const options = document.querySelectorAll('#options button');
+      options.forEach((btn, index) => {
+        if (index === q.answer) {
+          btn.classList.add('bg-green-500/30', 'border-green-500');
+        }
+        btn.disabled = true;
+      });
+      
+      // Afficher le feedback
+      document.getElementById('feedback').innerHTML = `⏰ Temps écoulé !`;
+      document.getElementById('explanation').innerHTML = `💡 ${q.explanation}`;
+      document.getElementById('score').innerHTML = `Score : ${quizState.score}/${quizState.questions.length}`;
+      document.getElementById('result').classList.remove('hidden');
+      document.getElementById('next-btn').classList.remove('hidden');
+    }
+    
     function loadQuestion() {
-      if (currentQuestion >= quizData.length) {
+      if (quizState.currentQuestion >= quizState.questions.length) {
         showResults();
         return;
       }
-
-      const q = quizData[currentQuestion];
-      document.getElementById('question').innerHTML = q.question;
-      document.getElementById('progress').textContent = `Question ${currentQuestion + 1}/${quizData.length}`;
       
+      clearInterval(timerInterval);
+      startTimer();
+      
+      const q = quizState.questions[quizState.currentQuestion];
+      
+      // Mettre à jour la barre de progression
+      document.getElementById('progress').textContent = `Question ${quizState.currentQuestion + 1}/${quizState.questions.length}`;
+      progressBar.style.width = `${((quizState.currentQuestion + 1) / quizState.questions.length) * 100}%`;
+      
+      // Afficher la catégorie
+      document.getElementById('category-badge').textContent = formatCategoryName(q.category);
+      document.getElementById('category-badge').className = `inline-block px-3 py-1 bg-${getCategoryColor(q.category)}-500/20 text-${getCategoryColor(q.category)}-300 rounded-full text-sm mb-2`;
+      
+      // Charger la question
+      document.getElementById('question').innerHTML = q.question;
+      
+      // Afficher l'image si elle existe
+      const imageContainer = document.getElementById('image-container');
+      if (q.image) {
+        document.getElementById('question-image').src = q.image;
+        imageContainer.classList.remove('hidden');
+      } else {
+        imageContainer.classList.add('hidden');
+      }
+      
+      // Afficher les options
       let optionsHtml = '';
       q.options.forEach((option, index) => {
         optionsHtml += `
           <button onclick="checkAnswer(${index})" 
-            class="p-4 bg-white/10 rounded-lg hover:bg-yellow-500/20 transition">
-            ${String.fromCharCode(65 + index)}. ${option}
+            class="p-4 bg-white/10 hover:bg-white/20 rounded-lg transition flex items-center">
+            <span class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center mr-3">
+              ${String.fromCharCode(65 + index)}
+            </span>
+            <span>${option}</span>
           </button>
         `;
       });
@@ -97,17 +684,26 @@
       document.getElementById('options').innerHTML = optionsHtml;
       document.getElementById('next-btn').classList.add('hidden');
       document.getElementById('result').classList.add('hidden');
+      
+      // Animer le conteneur de question
+      const questionContainer = document.getElementById('question-container');
+      questionContainer.classList.remove('animate__fadeIn');
+      void questionContainer.offsetWidth; // Forcer un reflow
+      questionContainer.classList.add('animate__fadeIn');
     }
-
-    // Vérifier la réponse
-    function checkAnswer(selectedIndex) {
-      const q = quizData[currentQuestion];
+    
+    // Fonction globale pour vérifier la réponse
+    window.checkAnswer = function(selectedIndex) {
+      clearInterval(timerInterval);
+      
+      const q = quizState.questions[quizState.currentQuestion];
       const options = document.querySelectorAll('#options button');
+      const timeTaken = 30 - secondsLeft;
       
       // Désactive tous les boutons
       options.forEach(btn => btn.disabled = true);
       
-      // Met en évidence la réponse
+      // Mets en évidence la réponse
       options.forEach((btn, index) => {
         if (index === q.answer) {
           btn.classList.add('bg-green-500/30', 'border-green-500');
@@ -115,56 +711,346 @@
           btn.classList.add('bg-red-500/30', 'border-red-500');
         }
       });
-
-      // Affiche l'explication
+      
+      // Vérifier si la réponse est correcte
+      const isCorrect = selectedIndex === q.answer;
+      
+      // Mettre à jour les statistiques
+      quizState.categoryScores[q.category].total++;
+      if (isCorrect) {
+        quizState.score++;
+        quizState.categoryScores[q.category].correct++;
+        quizState.currentStreak++;
+        quizState.maxStreak = Math.max(quizState.maxStreak, quizState.currentStreak);
+        document.getElementById('feedback').innerHTML = `✅ Correct !`;
+      } else {
+        quizState.currentStreak = 0;
+        document.getElementById('feedback').innerHTML = `❌ Incorrect !`;
+      }
+      
+      // Enregistrer la réponse
+      quizState.answeredQuestions.push({
+        ...q,
+        userAnswer: selectedIndex,
+        correct: isCorrect,
+        timeTaken: timeTaken
+      });
+      
+      quizState.questionTimes.push(timeTaken);
+      
+      // Afficher l'explication
       document.getElementById('explanation').innerHTML = `💡 ${q.explanation}`;
+      document.getElementById('score').innerHTML = `Score : ${quizState.score}/${quizState.questions.length}`;
       document.getElementById('result').classList.remove('hidden');
-      
-      // Met à jour le score
-      if (selectedIndex === q.answer) {
-        score++;
-        document.getElementById('score').innerHTML = `✅ Score : ${score}/${quizData.length}`;
-      } else {
-        document.getElementById('score').innerHTML = `❌ Score : ${score}/${quizData.length}`;
-      }
-      
       document.getElementById('next-btn').classList.remove('hidden');
+    };
+    
+    function nextQuestion() {
+      quizState.currentQuestion++;
+      loadQuestion();
     }
-
-    // Afficher les résultats finaux
+    
     function showResults() {
-      const percentage = Math.round((score / quizData.length) * 100);
-      let message;
+      // Cacher le quiz et afficher les résultats
+      quizContainer.classList.add('hidden');
+      finalResults.classList.remove('hidden');
       
-      if (percentage >= 80) {
-        message = "🏆 Formidable ! Vous êtes un expert du football !";
-      } else if (percentage >= 60) {
-        message = "👍 Bon score ! Vous connaissez bien le football.";
+      // Calculer les statistiques
+      const totalQuestions = quizState.questions.length;
+      const correctAnswers = quizState.score;
+      const percentage = Math.round((correctAnswers / totalQuestions) * 100);
+      const avgTime = quizState.questionTimes.length > 0 
+        ? Math.round(quizState.questionTimes.reduce((a, b) => a + b, 0) / quizState.questionTimes.length) 
+        : 0;
+      
+      // Déterminer les meilleures/pires catégories
+      let bestCategory = null;
+      let worstCategory = null;
+      let bestScore = -1;
+      let worstScore = 101;
+      
+      Object.entries(quizState.categoryScores).forEach(([category, scores]) => {
+        if (scores.total > 0) {
+          const categoryPercentage = Math.round((scores.correct / scores.total) * 100);
+          
+          if (categoryPercentage > bestScore) {
+            bestScore = categoryPercentage;
+            bestCategory = category;
+          }
+          
+          if (categoryPercentage < worstScore) {
+            worstScore = categoryPercentage;
+            worstCategory = category;
+          }
+        }
+      });
+      
+      // Créer l'objet de statistiques pour les badges
+      const stats = {
+        totalQuestions,
+        correctAnswers,
+        percentage,
+        avgTime,
+        maxStreak: quizState.maxStreak,
+        categoryScores: quizState.categoryScores
+      };
+      
+      // Afficher les statistiques
+      document.getElementById('final-score-display').innerHTML = `
+        <div class="text-5xl font-bold mb-2">${correctAnswers}/${totalQuestions}</div>
+        <div class="text-2xl mb-4">${percentage}%</div>
+      `;
+      
+      // Message basé sur le score
+      let message;
+      if (percentage >= 90) {
+        message = "🏆 Formidable ! Tu es un expert du football et de l'apprentissage !";
+        confetti();
+      } else if (percentage >= 70) {
+        message = "👍 Excellent travail ! Tu as de bonnes connaissances !";
+      } else if (percentage >= 50) {
+        message = "👌 Pas mal ! Continue à apprendre, tu es sur la bonne voie !";
       } else {
-        message = "💪 Continuez à apprendre ! Le football est vaste.";
+        message = "💪 Continue tes efforts ! Chaque question est une opportunité d'apprendre !";
       }
       
-      document.getElementById('quiz-container').innerHTML = `
-        <div class="text-center">
-          <h2 class="text-3xl font-bold mb-6">Quiz Terminé !</h2>
-          <p class="text-2xl mb-4">Ton score : ${score}/${quizData.length}</p>
-          <p class="text-xl mb-6">${percentage}% de bonnes réponses</p>
-          <p class="text-lg mb-8">${message}</p>
-          <button onclick="location.reload()" class="px-6 py-3 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-lg font-bold">
-            Rejouer
-          </button>
-        </div>
-      `;
+      document.getElementById('final-message').innerHTML = message;
+      
+      // Afficher les statistiques détaillées
+      document.getElementById('avg-time').textContent = `${avgTime}s`;
+      document.getElementById('max-streak').textContent = quizState.maxStreak;
+      document.getElementById('best-category').textContent = bestCategory ? formatCategoryName(bestCategory) : "-";
+      document.getElementById('worst-category').textContent = worstCategory ? formatCategoryName(worstCategory) : "-";
+      
+      // Débloquer et afficher les badges
+      const badgesContainer = document.getElementById('badges-container');
+      badgesContainer.innerHTML = '';
+      
+      badges.forEach(badge => {
+        if (badge.condition(stats)) {
+          badgesContainer.innerHTML += `
+            <div class="bg-white/20 rounded-lg p-3 text-center w-20">
+              <div class="text-3xl mb-2">${badge.icon}</div>
+              <div class="text-xs font-bold">${badge.name}</div>
+            </div>
+          `;
+        }
+      });
+      
+      // Si aucun badge débloqué
+      if (badgesContainer.innerHTML === '') {
+        badgesContainer.innerHTML = `<p class="text-center w-full opacity-70">Essaie encore pour débloquer des badges !</p>`;
+      }
     }
-
-    // Initialisation
-    document.getElementById('next-btn').addEventListener('click', () => {
-      currentQuestion++;
-      loadQuestion();
-    });
-
-    // Lance le quiz au chargement
-    loadQuestion();
+    
+    function showQuestionsReview() {
+      finalResults.classList.add('hidden');
+      reviewContainer.classList.remove('hidden');
+      
+      const reviewContainer = document.getElementById('questions-review');
+      reviewContainer.innerHTML = '';
+      
+      quizState.answeredQuestions.forEach((q, index) => {
+        const userAnswerIndex = q.userAnswer !== null ? q.userAnswer : -1;
+        const correctAnswerIndex = q.answer;
+        
+        let reviewHtml = `
+          <div class="bg-white/10 p-6 rounded-lg">
+            <div class="flex justify-between mb-3">
+              <span class="text-${getCategoryColor(q.category)}-300">${formatCategoryName(q.category)}</span>
+              <span class="${q.correct ? 'text-green-400' : 'text-red-400'}">${q.correct ? '✓ Correct' : '✗ Incorrect'}</span>
+            </div>
+            <h4 class="text-xl font-bold mb-4">${index + 1}. ${q.question}</h4>
+            <div class="space-y-2 mb-4">
+        `;
+        
+        q.options.forEach((option, i) => {
+          let optionClass = '';
+          
+          if (i === correctAnswerIndex) {
+            optionClass = 'border-l-4 border-green-500 bg-green-500/20';
+          } else if (i === userAnswerIndex && !q.correct) {
+            optionClass = 'border-l-4 border-red-500 bg-red-500/20';
+          }
+          
+          reviewHtml += `
+            <div class="p-3 ${optionClass} rounded">
+              ${String.fromCharCode(65 + i)}. ${option}
+            </div>
+          `;
+        });
+        
+        reviewHtml += `
+            </div>
+            <div class="bg-black/20 p-3 rounded text-sm">
+              💡 ${q.explanation}
+            </div>
+            <div class="mt-3 text-xs opacity-70">
+              Temps : ${q.timeTaken}s
+            </div>
+          </div>
+        `;
+        
+        reviewContainer.innerHTML += reviewHtml;
+      });
+    }
+    
+    function resetQuiz() {
+      // Réinitialiser l'état
+      quizState = {
+        questions: [],
+        currentQuestion: 0,
+        score: 0,
+        currentStreak: 0,
+        maxStreak: 0,
+        startTime: 0,
+        questionTimes: [],
+        answeredQuestions: [],
+        categoryScores: {},
+        selectedCategory: quizState.selectedCategory,
+        selectedDifficulty: quizState.selectedDifficulty,
+        questionCount: quizState.questionCount
+      };
+      
+      // Redémarrer le quiz
+      finalResults.classList.add('hidden');
+      reviewContainer.classList.add('hidden');
+      welcomeScreen.classList.remove('hidden');
+    }
+    
+    function shareResults() {
+      const text = `J'ai obtenu ${quizState.score}/${quizState.questions.length} au Quiz Football Éducatif de LearnBall ! Peux-tu faire mieux ?`;
+      
+      // Si l'API de partage est disponible
+      if (navigator.share) {
+        navigator.share({
+          title: 'Mon score au Quiz LearnBall',
+          text: text,
+          url: window.location.href
+        })
+        .catch(err => {
+          // Fallback
+          alert(`${text}\n\nPartagez ce message avec vos amis !`);
+        });
+      } else {
+        // Fallback pour les navigateurs qui ne supportent pas l'API
+        alert(`${text}\n\nPartagez ce message avec vos amis !`);
+      }
+    }
+    
+    // Fonctions utilitaires
+    function formatCategoryName(category) {
+      const categoryNames = {
+        "maths": "Mathématiques",
+        "geo": "Géographie",
+        "histoire": "Histoire",
+        "regles": "Règles",
+        "langues": "Langues"
+      };
+      
+      return categoryNames[category] || category;
+    }
+    
+    function getCategoryColor(category) {
+      const colors = {
+        "maths": "blue",
+        "geo": "green",
+        "histoire": "purple",
+        "regles": "orange",
+        "langues": "pink"
+      };
+      
+      return colors[category] || "yellow";
+    }
+    
+    // Configuration pour le confetti
+    function confetti() {
+      const confettiSettings = { target: 'confetti-container', max: 150, size: 1.5, animate: true, props: ['circle', 'square', 'triangle', 'line'], colors: [[165,104,246], [230,61,135], [0,199,228], [253,214,126]], clock: 25 };
+      const confetti = new ConfettiGenerator(confettiSettings);
+      confetti.render();
+      
+      // Arrêter après 5 secondes
+      setTimeout(() => {
+        confetti.clear();
+      }, 5000);
+    }
+    
+    // Système de génération de questions par IA (simulation)
+    // Note: Dans un environnement réel, cette fonction ferait appel à une API d'IA
+    function generateAIQuestion(category) {
+      // Ceci est une simulation de génération de questions par IA
+      // Dans un cas réel, vous utiliseriez une API comme OpenAI ou Cohere
+      
+      const aiGeneratedQuestions = {
+        maths: [
+          {
+            question: "Si un joueur parcourt en moyenne 10 km par match et qu'il joue 38 matchs dans une saison, quelle distance totale parcourra-t-il ?",
+            options: ["280 km", "380 km", "480 km", "580 km"],
+            answer: 1,
+            explanation: "Distance totale = 10 km × 38 matchs = 380 km",
+            category: "maths",
+            difficulty: "debutant"
+          },
+          {
+            question: "Si une équipe a une probabilité de 0,6 de gagner à domicile et de 0,3 à l'extérieur, quelle est sa probabilité de gagner les deux prochains matchs si elle joue d'abord à domicile puis à l'extérieur ?",
+            options: ["0,18", "0,45", "0,9", "0,18"],
+            answer: 0,
+            explanation: "P(gagner les deux) = P(gagner à domicile) × P(gagner à l'extérieur) = 0,6 × 0,3 = 0,18",
+            category: "maths",
+            difficulty: "expert"
+          }
+        ],
+        geo: [
+          {
+            question: "Quelle est la distance approximative entre Londres (siège de la Premier League) et Madrid (siège de La Liga) ?",
+            options: ["500 km", "1000 km", "1300 km", "2000 km"],
+            answer: 2,
+            explanation: "La distance à vol d'oiseau entre Londres et Madrid est d'environ 1300 km.",
+            category: "geo",
+            difficulty: "intermediaire"
+          }
+        ]
+      };
+      
+      // Sélectionner une question aléatoire dans la catégorie
+      if (aiGeneratedQuestions[category]) {
+        const questions = aiGeneratedQuestions[category];
+        return questions[Math.floor(Math.random() * questions.length)];
+      }
+      
+      // Question par défaut si la catégorie n'existe pas
+      return {
+        question: "Quel est le nombre de joueurs sur un terrain de football ?",
+        options: ["9", "10", "11", "12"],
+        answer: 2,
+        explanation: "Il y a 11 joueurs par équipe sur un terrain de football.",
+        category: "regles",
+        difficulty: "debutant"
+      };
+    }
+    
+    // Enrichissement du système de quiz avec des questions générées par IA (simulation)()
+    function enrichQuizWithAI() {
+      // Dans une implémentation réelle, cette fonction appellerait une API d'IA
+      // pour générer de nouvelles questions basées sur les préférences de l'utilisateur
+      
+      const categories = ["maths", "geo", "histoire", "regles", "langues"];
+      
+      categories.forEach(category => {
+        // Ajouter quelques questions "IA" dans chaque catégorie
+        const aiQuestion = generateAIQuestion(category);
+        
+        // Dans une implémentation réelle, vous vérifieriez que la question n'existe pas déjà
+        if (!questionsDB[category]["ia"]) {
+          questionsDB[category]["ia"] = [];
+        }
+        
+        questionsDB[category]["ia"].push(aiQuestion);
+      });
+    }
+    
+    // Activer l'enrichissement par IA pour la démo
+    enrichQuizWithAI();
   </script>
 </body>
 </html>

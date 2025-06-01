@@ -211,21 +211,21 @@
             id: 1,
             original: "Football is more than just a game for me, it's a way of life.",
             translation: "Le football est plus qu'un simple jeu pour moi, c'est un mode de vie.",
-            audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+            audio: "/static/audio/EN1.mp3",
             player: "Harry Kane"
           },
           {
             id: 2,
             original: "I always prepare mentally before big matches to stay focused.",
             translation: "Je me prépare toujours mentalement avant les grands matchs pour rester concentré.",
-            audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
+            audio: "/static/audio/EN2.mp3",
             player: "Jordan Henderson"
           },
           {
             id: 3,
             original: "The atmosphere at Anfield is unlike anything else in world football.",
             translation: "L'atmosphère à Anfield est incomparable dans le monde du football.",
-            audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
+            audio: "/static/audio/EN3.mp3",
             player: "Trent Alexander-Arnold"
           }
         ]
@@ -239,21 +239,21 @@
             id: 1,
             original: "El fútbol es un lenguaje universal que une a las personas.",
             translation: "Le football est un langage universel qui unit les gens.",
-            audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3",
+            audio: "/static/audio/SP1.mp3",
             player: "Sergio Ramos"
           },
           {
             id: 2,
             original: "Cuando estoy en el campo, solo pienso en dar lo mejor de mí.",
             translation: "Quand je suis sur le terrain, je pense seulement à donner le meilleur de moi-même.",
-            audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3",
+            audio: "/static/audio/SP2.mp3",
             player: "Andrés Iniesta"
           },
           {
             id: 3,
             original: "La técnica es importante, pero el corazón lo es más.",
             translation: "La technique est importante, mais le cœur l'est encore plus.",
-            audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3",
+            audio: "/static/audio/SP3.mp3",
             player: "Xavi Hernández"
           }
         ]
@@ -267,21 +267,21 @@
             id: 1,
             original: "Fußball ist für mich mehr als nur ein Spiel, es ist eine Leidenschaft.",
             translation: "Pour moi, le football est plus qu'un jeu, c'est une passion.",
-            audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3",
+            audio: "/static/audio/GR1.mp3",
             player: "Manuel Neuer"
           },
           {
             id: 2,
             original: "Der Gegenpressing ist wie ein Konzert, alle müssen zusammenspielen.",
             translation: "Le contre-pressing est comme un concert, tout le monde doit jouer ensemble.",
-            audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3",
+            audio: "/static/audio/GR2.mp3",
             player: "Jürgen Klopp"
           },
           {
             id: 3,
             original: "Disziplin und Teamgeist sind die Grundlagen des Erfolgs.",
             translation: "La discipline et l'esprit d'équipe sont les fondements du succès.",
-            audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-9.mp3",
+            audio: "/static/audio/GR3.mp3",
             player: "Thomas Müller"
           }
         ]
@@ -432,10 +432,31 @@
     }
 
     // Fonctions globales
-    window.playAudio = function(audioUrl) {
-      const audio = new Audio(audioUrl);
-      audio.play().catch(e => console.log("Lecture audio bloquée:", e));
-    };
+   let currentAudio = null; // Stocke l'audio en cours
+
+  window.playAudio = function(audioUrl) {
+  const fullPath = audioUrl.startsWith('/static') ? audioUrl : '/static/' + audioUrl;
+
+  // Si un audio est déjà en cours
+  if (currentAudio) {
+    if (currentAudio.src.includes(fullPath)) {
+      // Même audio → on stoppe
+      currentAudio.pause();
+      currentAudio.currentTime = 0;
+      currentAudio = null;
+      return;
+    } else {
+      // Autre audio → on stoppe l'ancien
+      currentAudio.pause();
+      currentAudio.currentTime = 0;
+    }
+  }
+
+  // Nouveau son
+  currentAudio = new Audio(fullPath);
+  currentAudio.play().catch(e => console.log("Erreur lecture audio:", e));
+};
+
 
     window.toggleLearned = function(phraseId) {
       if (learnedPhrases.includes(phraseId)) {
