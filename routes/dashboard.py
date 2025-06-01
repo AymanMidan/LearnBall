@@ -31,4 +31,3 @@ def quiz():
     if 'user_id' not in session:
         return redirect('/login')
     return render_template('quiz.html')
-
