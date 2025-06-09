@@ -12,7 +12,9 @@ main_routes = Blueprint('main', __name__)
 
 @main_routes.route('/')
 def home():
-    return render_template('index.html')
+    is_logged_in = "user_id" in session
+    return render_template("index.html", is_logged_in=is_logged_in)
+
 
 @main_routes.route('/compte')
 def compte():
@@ -141,3 +143,13 @@ def contact():
         return redirect(url_for('main.contact'))
 
     return render_template("contact.html")
+
+@main_routes.route('/tomorrow')
+def tomorrow():
+    return render_template('tomorrow.html')
+
+@main_routes.route("/scientifique")
+def scientifique():
+    if "user_id" not in session:
+        return redirect(url_for("auth.login"))
+    return render_template("scientifique.html")
