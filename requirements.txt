@@ -1,0 +1,15 @@
+Flask==2.2.5
+PyMySQL
+Flask-Session
+Werkzeug
+Flask-PyMySQL
+
+
+
+pymongo
+
+
+
+Flask-Cors
+
+
